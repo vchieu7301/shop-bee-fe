@@ -110,7 +110,7 @@ export default function Sidebar() {
                 <ListItemText primary="Home" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
-            <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate("admin/order")}} >
+            <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate('/admin/order')}} >
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -130,7 +130,7 @@ export default function Sidebar() {
                 <ListItemText primary="Order" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
-            <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate("admin/user")}} >
+            <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate('/admin/user')}} >
               <ListItemButton
                 sx={{
                   minHeight: 48,
