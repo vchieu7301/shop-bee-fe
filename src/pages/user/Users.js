@@ -22,7 +22,7 @@ import { DataGrid } from "@mui/x-data-grid";
 import Loader from "../../Components/Loader";
 
 
-export default function User() {
+export default function Users() {
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
   const [listData, setListData] = useState([]);

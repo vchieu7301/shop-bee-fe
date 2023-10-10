@@ -14,6 +14,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import RequestPageIcon from '@mui/icons-material/RequestPage';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import InventoryIcon from '@mui/icons-material/Inventory';
 import { ListSubheader, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -110,7 +111,7 @@ export default function Sidebar() {
                 <ListItemText primary="Home" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
-            <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate('/admin/order')}} >
+            <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate('/admin/orders')}} >
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -130,7 +131,7 @@ export default function Sidebar() {
                 <ListItemText primary="Order" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
-            <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate('/admin/user')}} >
+            <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate('/admin/users')}} >
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -148,6 +149,26 @@ export default function Sidebar() {
                 <ContactPageIcon />
                 </ListItemIcon>
                 <ListItemText primary="User" sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate('/admin/products')}} >
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                <InventoryIcon />
+                </ListItemIcon>
+                <ListItemText primary="Product" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
         </List>

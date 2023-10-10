@@ -1,15 +1,17 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Auth from "./pages/auth/Auth";
 import Dashboard from "./pages/dashboard/Dashboard";
-import Order from "./pages/order/Orders";
-import User from "./pages/user/User";
+import Orders from "./pages/order/Orders";
+import Users from "./pages/user/Users";
+import Products from "./pages/product/Products"
 const AdminRoutes = () => {
   return (
     <Routes>
       <Route path="dashboard" element={<Dashboard />} />
       <Route path="login" element={<Auth />} />
-      <Route path="order" element={<Order />} />
-      <Route path="user" element={<User />} />
+      <Route path="orders" element={<Orders />} />
+      <Route path="users" element={<Users />} />
+      <Route path="products" element={<Products />} />
     </Routes>
   );
 };
