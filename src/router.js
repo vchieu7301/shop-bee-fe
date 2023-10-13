@@ -5,10 +5,12 @@ import Orders from "./pages/order/Orders";
 import Users from "./pages/user/Users";
 import Products from "./pages/product/Products"
 import Categories from "./pages/category/Categories";
+import ChangePassword from "./pages/user/ChangePassword";
 const AdminRoutes = () => {
   return (
     <Routes>
       <Route path="dashboard" element={<Dashboard />} />
+      <Route path="change-password" element={<ChangePassword />} />
       <Route path="login" element={<Auth />} />
       <Route path="orders" element={<Orders />} />
       <Route path="users" element={<Users />} />

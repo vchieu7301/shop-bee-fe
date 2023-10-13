@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
+import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import AddIcon from "@mui/icons-material/Add";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import Layout from "../../layouts/Layout";
-import ProductForm from "./ProductForm"; // Assuming you have a ProductForm component
 import {
   Box,
   Button,
@@ -20,63 +16,51 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import Loader from "../../Components/Loader";
-import ImageRenderer from "./ImageRenderer";
+import CategoryForm from "./CategoryForm";
+import Layout from "../../layouts/Layout";
+import axios from "axios";
 
-export default function Products() {
-  const navigate = useNavigate();
+export default function Categories() {
   const apiUrl = process.env.REACT_APP_API_URL;
-  const [listData, setListData] = useState([]);
-  const [deleteProductId, setDeleteProductId] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [deleteCategoryId, setDeleteCategoryId] = useState(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null);
+  const [editingCategory, setEditingCategory] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${apiUrl}/admin/products`, {
+        const response = await axios.get(`${apiUrl}/admin/categories`, {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("Token"),
           },
         });
         if (response.data && response.data.result) {
-          setListData(
-            response.data.result.map((row, index) => ({
-              id: row.id,
+          setCategories(
+            response.data.result.map((category, index) => ({
+              id: category.id,
               index: index + 1,
-              name: row.product_name,
-              quantity: row.quantity,
-              category: row.category_name,
-              description: row.product_description,
-              price: row.price,
-              image: row.images,
+              category_name: category.category_name,
+              description: category.description,
             }))
           );
         }
       } catch (error) {
-        console.error("Error fetching product data:", error);
+        console.error(error);
       } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, [navigate, apiUrl]);
+  }, [apiUrl]);
 
   const columns = [
-    { field: "index", headerName: "ID", flex: 0.5 },
-    { field: "name", headerName: "Product Name", flex: 1 },
-    { field: "quantity", headerName: "Quantity", flex: 1 },
-    { field: "category", headerName: "Category", flex: 1 },
-    { field: "description", headerName: "Description", flex: 1.5 },
-    { field: "price", headerName: "Price", flex: 1 },
-    {
-      field: "image",
-      headerName: "Image",
-      flex: 1,
-      renderCell: (params) => <ImageRenderer value={params.value} />,
-    },
+    { field: "index", headerName: "#", flex: 0.5 },
+    { field: "category_name", headerName: "Category Name", flex: 1 },
+    { field: "description", headerName: "Description", flex: 1 },
     {
       field: "actions",
       headerName: "Actions",
@@ -115,19 +99,19 @@ export default function Products() {
 
   const handleAdd = () => {
     setIsFormVisible(true);
-    setEditingProduct(null);
+    setEditingCategory(null);
   };
 
   const handleFormClose = () => {
     setIsFormVisible(false);
-    setEditingProduct(null);
+    setEditingCategory(null);
   };
 
   const handleEdit = (id) => {
-    const productToEdit = listData.find((product) => product.id === id);
-    if (productToEdit) {
+    const categoryToEdit = categories.find((category) => category.id === id);
+    if (categoryToEdit) {
       setIsFormVisible(true);
-      setEditingProduct(productToEdit);
+      setEditingCategory(categoryToEdit);
     }
   };
 
@@ -138,18 +122,18 @@ export default function Products() {
     };
 
     try {
-      if (editingProduct) {
-        console.log("Editing product:", formData);
+      if (editingCategory) {
+        console.log("Editing order:", formData);
         await axios.put(
-          `${apiUrl}/admin/products/${editingProduct.id}`,
+          `${apiUrl}/admin/categories/${editingCategory.id}`,
           formData,
           {
             headers,
           }
         );
       } else {
-        console.log("Adding product:", formData);
-        await axios.post(`${apiUrl}/admin/products`, formData, {
+        console.log("Adding order:", formData);
+        await axios.post(`${apiUrl}/admin/categories`, formData, {
           headers,
         });
       }
@@ -159,23 +143,23 @@ export default function Products() {
   };
 
   const handleDelete = (id) => {
-    setDeleteProductId(id);
+    setDeleteCategoryId(id);
     setConfirmDialogOpen(true);
   };
 
   const handleConfirmDelete = async () => {
     try {
       const response = await axios.delete(
-        `${apiUrl}/admin/products/${deleteProductId}`,
+        `${apiUrl}/admin/categories/${deleteCategoryId}`,
         {
           headers: {
             Authorization: "Bearer " + localStorage.getItem("Token"),
           },
         }
       );
-      console.log("Product deleted successfully:", response.data.message);
+      console.log("Category deleted successfully:", response.data.message);
     } catch (error) {
-      console.error("Error deleting product:", error);
+      console.error("Error deleting category:", error);
     } finally {
       setConfirmDialogOpen(false);
     }
@@ -183,24 +167,6 @@ export default function Products() {
 
   const handleCancelDelete = () => {
     setConfirmDialogOpen(false);
-  };
-
-  const handleAddCategory = async (categoryData) => {
-    try {
-      const response = await axios.post(
-        `${apiUrl}/admin/categories`,
-        categoryData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("Token")}`,
-          },
-        }
-      );
-      console.log("Category added successfully:", response.data);
-      setIsFormVisible(true);
-    } catch (error) {
-      console.error("Error adding category:", error);
-    }
   };
 
   return (
@@ -211,7 +177,7 @@ export default function Products() {
             <Loader />
           ) : (
             <DataGrid
-              rows={listData}
+              rows={categories}
               columns={columns}
               pageSize={10}
               rowsPerPageOptions={[10]}
@@ -223,20 +189,18 @@ export default function Products() {
         </Box>
         {isFormVisible && (
           <Box>
-            {editingProduct ? (
+            {editingCategory ? (
               <Box>
-                <ProductForm
-                  initialProduct={editingProduct}
+                <CategoryForm
+                  initialCategory={editingCategory}
                   handleSubmit={handleFormSubmit}
-                  handleAddCategory={handleAddCategory}
                   handleClose={handleFormClose}
                 />
               </Box>
             ) : (
               <Box>
-                <ProductForm
+                <CategoryForm
                   handleSubmit={handleFormSubmit}
-                  handleAddCategory={handleAddCategory}
                   handleClose={handleFormClose}
                 />
               </Box>
@@ -254,19 +218,14 @@ export default function Products() {
         <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete this product?
+            Are you sure you want to delete this category?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelDelete} color="primary" size="large">
+          <Button onClick={handleCancelDelete} color="primary">
             Cancel
           </Button>
-          <Button
-            onClick={handleConfirmDelete}
-            color="primary"
-            size="large"
-            autoFocus
-          >
+          <Button onClick={handleConfirmDelete} color="primary" autoFocus>
             Confirm
           </Button>
         </DialogActions>
