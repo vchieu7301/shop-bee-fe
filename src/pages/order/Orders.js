@@ -163,8 +163,7 @@ export default function Orders() {
         `${apiUrl}/admin/orders/${deleteOrderId}`,
         {
           headers: {
-            Authorization:
-              "Bearer " + localStorage.getItem("Token"),
+            Authorization: "Bearer " + localStorage.getItem("Token"),
           },
         }
       );
@@ -182,44 +181,43 @@ export default function Orders() {
 
   return (
     <Layout>
-    <Container sx={{ mt: 10 }}>
-      <Typography variant="h4" gutterBottom>
-        Orders
-      </Typography>
-          <Box sx={{ height: 400, width: '100%' }}>
-            {loading && !isFormVisible ? <Loader /> : (
-              <DataGrid
-                rows={listData}
-                columns={columns}
-                pageSize={10}
-                rowsPerPageOptions={[10]}
-                disableColumnMenu
-                rowHeight={70}
-                columnHeaderHeight={80}
-              />
+      <Container sx={{ mt: 10 }}>
+        <Box sx={{ height: 400, width: "100%" }}>
+          {loading && !isFormVisible ? (
+            <Loader />
+          ) : (
+            <DataGrid
+              rows={listData}
+              columns={columns}
+              pageSize={10}
+              rowsPerPageOptions={[10]}
+              disableColumnMenu
+              rowHeight={70}
+              columnHeaderHeight={80}
+            />
+          )}
+        </Box>
+        {isFormVisible && (
+          <Box>
+            {editingOrder ? (
+              <Box>
+                <OrderForm
+                  initialOrder={editingOrder}
+                  handleSubmit={handleFormSubmit}
+                  handleClose={handleFormClose}
+                />
+              </Box>
+            ) : (
+              <Box>
+                <OrderForm
+                  handleSubmit={handleFormSubmit}
+                  handleClose={handleFormClose}
+                />
+              </Box>
             )}
           </Box>
-          {isFormVisible && (
-            <Box>
-              {editingOrder ? (
-                <Box>
-                  <OrderForm
-                    initialOrder={editingOrder}
-                    handleSubmit={handleFormSubmit}
-                    handleClose={handleFormClose}
-                  />
-                </Box>
-              ) : (
-                <Box>
-                  <OrderForm
-                    handleSubmit={handleFormSubmit}
-                    handleClose={handleFormClose}
-                  />
-                </Box>
-              )}
-            </Box>
-          )}
-    </Container>
+        )}
+      </Container>
 
       <Dialog
         open={confirmDialogOpen}
@@ -237,7 +235,12 @@ export default function Orders() {
           <Button onClick={handleCancelDelete} color="primary" size="large">
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete} color="primary" size="large" autoFocus>
+          <Button
+            onClick={handleConfirmDelete}
+            color="primary"
+            size="large"
+            autoFocus
+          >
             Confirm
           </Button>
         </DialogActions>

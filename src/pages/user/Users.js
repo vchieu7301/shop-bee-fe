@@ -16,11 +16,9 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
-  Typography,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import Loader from "../../Components/Loader";
-
 
 export default function Users() {
   const navigate = useNavigate();
@@ -64,7 +62,7 @@ export default function Users() {
   const columns = [
     { field: "index", headerName: "#", flex: 0.5 },
     { field: "name", headerName: "Name", flex: 1.5 },
-    { field: "email", headerName: "Email",flex: 1.5 },
+    { field: "email", headerName: "Email", flex: 1.5 },
     { field: "role", headerName: "Role", flex: 1 },
     {
       field: "actions",
@@ -73,7 +71,11 @@ export default function Users() {
       headerAlign: "center",
       align: "center",
       renderHeader: () => (
-        <IconButton aria-label="add" color="primary" onClick={() => handleAdd()}>
+        <IconButton
+          aria-label="add"
+          color="primary"
+          onClick={() => handleAdd()}
+        >
           <AddIcon />
         </IconButton>
       ),
@@ -168,65 +170,69 @@ export default function Users() {
 
   return (
     <Layout>
-    <Container sx={{ mt: 10 }}>
-      <Typography variant="h4" gutterBottom>
-        Users
-      </Typography>
-          <Box sx={{ height: 400, width: "100%" }}>
-            {loading && !isFormVisible ? <Loader /> : (
-              <DataGrid
-                rows={listData}
-                columns={columns}
-                pageSize={10}
-                rowsPerPageOptions={[10]}
-                disableColumnMenu
-                rowHeight={70}
-                columnHeaderHeight={80}
-              />
+      <Container sx={{ mt: 10 }}>
+        <Box sx={{ height: 400, width: "100%" }}>
+          {loading && !isFormVisible ? (
+            <Loader />
+          ) : (
+            <DataGrid
+              rows={listData}
+              columns={columns}
+              pageSize={10}
+              rowsPerPageOptions={[10]}
+              disableColumnMenu
+              rowHeight={70}
+              columnHeaderHeight={80}
+            />
+          )}
+        </Box>
+        {isFormVisible && (
+          <Box>
+            {editingUser ? (
+              <Box>
+                <UserForm
+                  initialUser={editingUser}
+                  handleSubmit={handleFormSubmit}
+                  handleClose={handleFormClose}
+                />
+              </Box>
+            ) : (
+              <Box>
+                <UserForm
+                  handleSubmit={handleFormSubmit}
+                  handleClose={handleFormClose}
+                />
+              </Box>
             )}
           </Box>
-          {isFormVisible && (
-            <Box>
-              {editingUser ? (
-                <Box>
-                  <UserForm
-                    initialUser={editingUser}
-                    handleSubmit={handleFormSubmit}
-                    handleClose={handleFormClose}
-                  />
-                </Box>
-              ) : (
-                <Box>
-                  <UserForm
-                    handleSubmit={handleFormSubmit}
-                    handleClose={handleFormClose}
-                  />
-                </Box>
-              )}
-            </Box>
-          )}
-    </Container>
-    <Dialog
-      open={confirmDialogOpen}
-      onClose={handleCancelDelete}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
-      <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
-      <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          Are you sure you want to delete this user?
-        </DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleCancelDelete} color="primary" size="large">
-          Cancel
-        </Button>
-        <Button onClick={handleConfirmDelete} color="primary" size="large" autoFocus>
-          Confirm
-        </Button>
-      </DialogActions>
-    </Dialog>
-  </Layout>
+        )}
+      </Container>
+      <Dialog
+        open={confirmDialogOpen}
+        onClose={handleCancelDelete}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to delete this user?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancelDelete} color="primary" size="large">
+            Cancel
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            color="primary"
+            size="large"
+            autoFocus
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Layout>
   );
 }
