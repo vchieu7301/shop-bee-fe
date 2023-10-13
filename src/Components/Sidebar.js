@@ -15,6 +15,7 @@ import RequestPageIcon from '@mui/icons-material/RequestPage';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import InventoryIcon from '@mui/icons-material/Inventory';
+import ClassIcon from '@mui/icons-material/Class';
 import { ListSubheader, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -91,7 +92,7 @@ export default function Sidebar() {
         <Divider />
         <List>
            <ListSubheader>System Setting</ListSubheader>
-            <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate("/")}} >
+            <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate('/')}} >
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -169,6 +170,26 @@ export default function Sidebar() {
                 <InventoryIcon />
                 </ListItemIcon>
                 <ListItemText primary="Product" sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
+            <ListItem disablePadding sx={{ display: "block" }} onClick={()=>{navigate('/admin/categories')}} >
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? "initial" : "center",
+                  px: 2.5,
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : "auto",
+                    justifyContent: "center",
+                  }}
+                >
+                <ClassIcon />
+                </ListItemIcon>
+                <ListItemText primary="Categories" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
         </List>

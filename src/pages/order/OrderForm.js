@@ -80,9 +80,7 @@ const OrderForm = ({ initialOrder, handleSubmit, handleClose }) => {
       open={true}
       onClose={handleClose}
       fullWidth={true}
-      maxWidth="md"
-      sx={{}}
-    >
+      >
       <DialogTitle>{initialOrder ? "Edit Order" : "Add Order"}</DialogTitle>
       <DialogContent sx={{ overflow: "visible", height: "auto" }}>
         <form onSubmit={handleFormSubmit}>
@@ -208,14 +206,21 @@ const OrderForm = ({ initialOrder, handleSubmit, handleClose }) => {
                 onChange={handleChange}
               />
             </Grid>
-            <DialogActions>
-              <Button onClick={handleClose} color="primary">
-                Cancel
-              </Button>
-              <Button type="submit" color="primary">
-                {initialOrder ? "Save" : "Add"}
-              </Button>
-            </DialogActions>
+            <Grid item xs={12}>
+              <DialogActions>
+                <Button onClick={handleClose} color="primary" size="large">
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  color="primary"
+                  variant="contained"
+                  size="large"
+                >
+                  {initialOrder ? "Save" : "Add"}
+                </Button>
+              </DialogActions>
+            </Grid>
           </Grid>
         </form>
       </DialogContent>

@@ -219,10 +219,10 @@ export default function Users() {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleCancelDelete} color="primary">
+        <Button onClick={handleCancelDelete} color="primary" size="large">
           Cancel
         </Button>
-        <Button onClick={handleConfirmDelete} color="primary" autoFocus>
+        <Button onClick={handleConfirmDelete} color="primary" size="large" autoFocus>
           Confirm
         </Button>
       </DialogActions>

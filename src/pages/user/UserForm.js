@@ -19,31 +19,31 @@ const UserForm = ({ initialUser, handleSubmit, handleClose }) => {
     initialUser || { name: "", email: "", role: "" }
   );
   const [roles, setRoles] = useState([]);
-  
 
   useEffect(() => {
     const apiUrl = process.env.REACT_APP_API_URL;
     setUser(initialUser || { name: "", email: "", role: "" });
-    axios.get(`${apiUrl}/admin/users`, {
+    axios
+      .get(`${apiUrl}/admin/users`, {
         headers: {
           Authorization: "Bearer " + localStorage.getItem("Token"),
-        }
+        },
       })
-        .then((response) => {
-          setRoles(response.data.roles);  // Assuming roles are in the 'roles' property of the response
-        })
-        .catch((error) => {
-          console.error("Error fetching roles:", error);
-        });
+      .then((response) => {
+        setRoles(response.data.roles);
+      })
+      .catch((error) => {
+        console.error("Error fetching roles:", error);
+      });
   }, [initialUser]);
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
     setUser({ ...user, [name]: value });
   };
 
-  const handleFormSubmit = (event) => {
-    event.preventDefault();
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
     handleSubmit(user);
     handleClose();
   };
@@ -92,20 +92,27 @@ const UserForm = ({ initialUser, handleSubmit, handleClose }) => {
                   </MenuItem>
                   {roles.map((role) => (
                     <MenuItem key={role.role_id} value={role.role_idid}>
-                    {role.role_name} 
+                      {role.role_name}
                     </MenuItem>
-                ))}
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
-            <DialogActions sx={{ justifyContent: 'flex-end'}}>
-              <Button onClick={handleClose} color="primary" >
-                Cancel
-              </Button>
-              <Button type="submit" color="primary" variant="contained">
-                {initialUser ? "Save" : "Add"}
-              </Button>
-            </DialogActions>
+            <Grid item xs={12}>
+              <DialogActions sx={{ justifyContent: "flex-end" }}>
+                <Button onClick={handleClose} color="primary" size="large">
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  color="primary"
+                  variant="contained"
+                  size="large"
+                >
+                  {initialUser ? "Save" : "Add"}
+                </Button>
+              </DialogActions>
+            </Grid>
           </Grid>
         </form>
       </DialogContent>

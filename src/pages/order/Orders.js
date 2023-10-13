@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import AddIcon from "@mui/icons-material/Add";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Layout from "../../layouts/Layout";
 import OrderForm from "./OrderForm";
@@ -22,7 +21,6 @@ import { DataGrid } from "@mui/x-data-grid";
 import Loader from "../../Components/Loader";
 
 export default function Orders() {
-  const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
   const [listData, setListData] = useState([]);
   const [deleteOrderId, setDeleteOrderId] = useState(null);
@@ -68,7 +66,7 @@ export default function Orders() {
       }
     };
     fetchData();
-  }, [navigate, apiUrl]);
+  }, [apiUrl]);
 
   const columns = [
     { field: "index", headerName: "#", flex: 0.5 },
@@ -166,7 +164,7 @@ export default function Orders() {
         {
           headers: {
             Authorization:
-              "Bearer " + localStorage.getItem("PersonalAccessToken"),
+              "Bearer " + localStorage.getItem("Token"),
           },
         }
       );
@@ -236,10 +234,10 @@ export default function Orders() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelDelete} color="primary">
+          <Button onClick={handleCancelDelete} color="primary" size="large">
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete} color="primary" autoFocus>
+          <Button onClick={handleConfirmDelete} color="primary" size="large" autoFocus>
             Confirm
           </Button>
         </DialogActions>

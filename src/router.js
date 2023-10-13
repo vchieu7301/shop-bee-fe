@@ -4,6 +4,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import Orders from "./pages/order/Orders";
 import Users from "./pages/user/Users";
 import Products from "./pages/product/Products"
+import Categories from "./pages/category/Categories";
 const AdminRoutes = () => {
   return (
     <Routes>
@@ -12,6 +13,7 @@ const AdminRoutes = () => {
       <Route path="orders" element={<Orders />} />
       <Route path="users" element={<Users />} />
       <Route path="products" element={<Products />} />
+      <Route path="categories" element={<Categories />} />
     </Routes>
   );
 };
