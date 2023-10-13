@@ -1,17 +1,12 @@
 // LayoutContext.js
-import { createContext, useState, useCallback } from 'react';
+import { createContext, useState} from 'react';
 
 const LayoutContext = createContext();
 
 export const LayoutProvider = ({ children }) => {
-  const [showHeader, setShowHeader] = useState(true);
-
-  const toggleHeader = useCallback(() => {
-    setShowHeader(prevShowHeader => !prevShowHeader);
-  }, []);
-
+  const [selectedListItem, setSelectedListItem] = useState("");
   return (
-    <LayoutContext.Provider value={{ showHeader, toggleHeader }}>
+    <LayoutContext.Provider value={{ selectedListItem, setSelectedListItem }}>
       {children}
     </LayoutContext.Provider>
   );
