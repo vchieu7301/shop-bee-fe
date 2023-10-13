@@ -15,7 +15,6 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
-  Typography,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import Loader from "../../Components/Loader";
