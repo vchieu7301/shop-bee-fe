@@ -188,7 +188,6 @@ const OrderForm = ({ initialOrder, handleSubmit, handleClose }) => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                required
                 fullWidth
                 label="Coupon Code"
                 name="coupon_code"
@@ -198,7 +197,6 @@ const OrderForm = ({ initialOrder, handleSubmit, handleClose }) => {
             </Grid>
             <Grid item xs={12}>
               <TextField
-                required
                 fullWidth
                 label="Shipping fee"
                 name="shipping_fee"

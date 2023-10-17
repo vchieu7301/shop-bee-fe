@@ -59,7 +59,7 @@ export default function Categories() {
   const columns = [
     { field: "index", headerName: "#", flex: 0.5 },
     { field: "category_name", headerName: "Category Name", flex: 1 },
-    { field: "description", headerName: "Description", flex: 1 },
+    { field: "description", headerName: "Description", flex: 1.5 },
     {
       field: "actions",
       headerName: "Actions",
@@ -123,13 +123,9 @@ export default function Categories() {
     try {
       if (editingCategory) {
         console.log("Editing order:", formData);
-        await axios.put(
-          `${apiUrl}/admin/categories/${editingCategory.id}`,
-          formData,
-          {
+        await axios.put(`${apiUrl}/admin/categories/${editingCategory.id}`,formData,{
             headers,
-          }
-        );
+          });
       } else {
         console.log("Adding order:", formData);
         await axios.post(`${apiUrl}/admin/categories`, formData, {
@@ -221,10 +217,10 @@ export default function Categories() {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCancelDelete} color="primary">
+          <Button onClick={handleCancelDelete} color="primary" size="large">
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete} color="primary" autoFocus>
+          <Button onClick={handleConfirmDelete} color="primary" size="large" autoFocus>
             Confirm
           </Button>
         </DialogActions>
