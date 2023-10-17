@@ -27,7 +27,7 @@ import ListItemText from "@mui/material/ListItemText";
 import { useNavigate } from "react-router-dom";
 import LayoutContext from "../context/LayoutContext";
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -37,42 +37,43 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== "open" })(
-  ({ theme, open }) => ({
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: "nowrap",
-    boxSizing: "border-box",
-    ...(open && {
-      width: drawerWidth,
-      transition: theme.transitions.create("width", {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-      overflowX: "hidden",
-      "& .MuiDrawer-paper": {
-        width: drawerWidth,
-      },
-    }),
-    ...(!open && {
-      transition: theme.transitions.create("width", {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-      }),
-      overflowX: "hidden",
-      width: theme.spacing(7) + 1,
-      [theme.breakpoints.up("sm")]: {
-        width: theme.spacing(8) + 1,
-      },
-      "& .MuiDrawer-paper": {
-        width: theme.spacing(7) + 1,
-        [theme.breakpoints.up("sm")]: {
-          width: theme.spacing(8) + 1,
-        },
-      },
-    }),
-  })
-);
+const openedMixin = (theme) => ({
+  width: drawerWidth,
+  transition: theme.transitions.create("width", {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.enteringScreen,
+  }),
+  overflowX: "hidden",
+});
+
+const closedMixin = (theme) => ({
+  transition: theme.transitions.create("width", {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  overflowX: "hidden",
+  width: `calc(${theme.spacing(7)} + 1px)`,
+  [theme.breakpoints.up("sm")]: {
+    width: `calc(${theme.spacing(8)} + 1px)`,
+  },
+});
+
+const Drawer = styled(MuiDrawer, {
+  shouldForwardProp: (prop) => prop !== "open",
+})(({ theme, open }) => ({
+  width: drawerWidth,
+  flexShrink: 0,
+  whiteSpace: "nowrap",
+  boxSizing: "border-box",
+  ...(open && {
+    ...openedMixin(theme),
+    "& .MuiDrawer-paper": openedMixin(theme),
+  }),
+  ...(!open && {
+    ...closedMixin(theme),
+    "& .MuiDrawer-paper": closedMixin(theme),
+  }),
+}));
 
 const Sidebar = () => {
   const [open, setOpen] = useState(true);
@@ -102,7 +103,7 @@ const Sidebar = () => {
   return (
     <Drawer variant="permanent" open={open}>
       <DrawerHeader>
-      <Box sx={{ display: "flex", alignItems: "center" }}>
+      <Box sx={{ display: "flex", alignItems: "center", opacity: open ? 1 : 0  }}>
           <EmojiNatureIcon fontSize="large" /> 
           <Typography variant="h5" sx={{ ml: 1 }}>
             Shop-bee
@@ -124,7 +125,7 @@ const Sidebar = () => {
             }}
           >
             <ListItemButton sx={{ minHeight: 48, justifyContent: open ? "initial" : "center", px: 2.5 }}>
-              <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : "auto", justifyContent: "center" }}>
+              <ListItemIcon sx={{ minWidth: 0, mr: open ? 2 : "auto", justifyContent: "center" }}>
                 {item.icon}
               </ListItemIcon>
               <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
@@ -146,7 +147,7 @@ const Sidebar = () => {
             }}
           >
             <ListItemButton sx={{ minHeight: 48, justifyContent: open ? "initial" : "center", px: 2.5 }}>
-              <ListItemIcon sx={{ minWidth: 0, mr: open ? 3 : "auto", justifyContent: "center" }}>
+              <ListItemIcon sx={{ minWidth: 0, mr: open ? 2 : "auto", justifyContent: "center" }}>
                 {item.icon}
               </ListItemIcon>
               <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
