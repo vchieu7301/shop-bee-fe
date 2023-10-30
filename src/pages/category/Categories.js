@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
-import AddIcon from "@mui/icons-material/Add";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import {
+  Add as AddIcon,
+  Edit as EditIcon,
+  DeleteOutline as DeleteOutlineIcon,
+  FilterList as FilterListIcon,
+} from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -11,9 +14,19 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Divider,
+  Grid,
   IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Typography,
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
 import Loader from "../../Components/Loader";
 import CategoryForm from "./CategoryForm";
 import Layout from "../../layouts/Layout";
@@ -27,6 +40,8 @@ export default function Categories() {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [editingCategory, setEditingCategory] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,45 +71,18 @@ export default function Categories() {
     fetchData();
   }, [apiUrl]);
 
-  const columns = [
-    { field: "index", headerName: "#", flex: 0.5 },
-    { field: "category_name", headerName: "Category Name", flex: 1 },
-    { field: "description", headerName: "Description", flex: 1.5 },
-    {
-      field: "actions",
-      headerName: "Actions",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-      renderHeader: () => (
-        <IconButton
-          aria-label="add"
-          color="primary"
-          onClick={() => handleAdd()}
-        >
-          <AddIcon />
-        </IconButton>
-      ),
-      renderCell: (params) => (
-        <Box display="flex" justifyContent="space-between">
-          <IconButton
-            aria-label="edit"
-            color="primary"
-            onClick={() => handleEdit(params.row.id)}
-          >
-            <EditIcon />
-          </IconButton>
-          <IconButton
-            aria-label="delete"
-            color="secondary"
-            onClick={() => handleDelete(params.row.id)}
-          >
-            <DeleteOutlineIcon />
-          </IconButton>
-        </Box>
-      ),
-    },
-  ];
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleFilter = () => {
+    
+  };
 
   const handleAdd = () => {
     setIsFormVisible(true);
@@ -122,12 +110,16 @@ export default function Categories() {
 
     try {
       if (editingCategory) {
-        console.log("Editing order:", formData);
-        await axios.put(`${apiUrl}/admin/categories/${editingCategory.id}`,formData,{
+        console.log("Editing category:", formData);
+        await axios.put(
+          `${apiUrl}/admin/categories/${editingCategory.id}`,
+          formData,
+          {
             headers,
-          });
+          }
+        );
       } else {
-        console.log("Adding order:", formData);
+        console.log("Adding category:", formData);
         await axios.post(`${apiUrl}/admin/categories`, formData, {
           headers,
         });
@@ -167,41 +159,119 @@ export default function Categories() {
   return (
     <Layout>
       <Container sx={{ mt: 10 }}>
-        <Box sx={{ height: 400, width: "100%" }}>
-          {loading && !isFormVisible ? (
-            <Loader />
-          ) : (
-            <DataGrid
-              rows={categories}
-              columns={columns}
-              pageSize={10}
-              rowsPerPageOptions={[10]}
-              disableColumnMenu
-              rowHeight={70}
-              columnHeaderHeight={80}
-            />
-          )}
-        </Box>
-        {isFormVisible && (
-          <Box>
-            {editingCategory ? (
-              <Box>
-                <CategoryForm
-                  initialCategory={editingCategory}
-                  handleSubmit={handleFormSubmit}
-                  handleClose={handleFormClose}
-                />
-              </Box>
+        <Paper elevation={2} sx={{ padding: 5 }}>
+        <Grid container justifyContent="space-between" alignItems="center">
+            <Grid item>
+              <Typography variant="h3">Categories</Typography>
+            </Grid>
+            <Grid item>
+              <Button
+                size="medium"
+                variant="contained"
+                color="primary"
+                onClick={handleAdd}
+                startIcon={<AddIcon />}
+              >
+                New Category
+              </Button>
+            </Grid>
+          </Grid>
+          <Divider sx={{ my: 2 }} />
+          <Grid
+            container
+            spacing={2}
+            justifyContent="space-between"
+            alignItems="center"
+          >
+          <Grid item></Grid>
+            <Grid item>
+              <IconButton
+                onClick={handleFilter}
+                color="inherit"
+                aria-label="Filter list"
+              >
+                <FilterListIcon />
+              </IconButton>
+            </Grid>
+          </Grid>
+          <Box sx={{ height: 600, width: "100%" }}>
+            {loading && !isFormVisible ? (
+              <Loader />
             ) : (
-              <Box>
-                <CategoryForm
-                  handleSubmit={handleFormSubmit}
-                  handleClose={handleFormClose}
-                />
-              </Box>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Category ID</TableCell>
+                      <TableCell>Category Name</TableCell>
+                      <TableCell>Description</TableCell>
+                      <TableCell>Actions</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {categories
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                      .map((category) => (
+                        <TableRow key={category.id}>
+                          <TableCell>#{category.id}</TableCell>
+                          <TableCell>{category.category_name}</TableCell>
+                          <TableCell>{category.description}</TableCell>
+                          <TableCell>
+                            <IconButton
+                              aria-label="edit"
+                              color="primary"
+                              onClick={() => handleEdit(category.id)}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton
+                              aria-label="delete"
+                              color="secondary"
+                              onClick={() => handleDelete(category.id)}
+                            >
+                              <DeleteOutlineIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             )}
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 50, 100]}
+              component="div"
+              count={categories.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
           </Box>
-        )}
+          {isFormVisible && (
+            <Box>
+              {editingCategory ? (
+                <Box>
+                  <CategoryForm
+                    initialCategory={editingCategory}
+                    handleSubmit={handleFormSubmit}
+                    handleClose={handleFormClose}
+                  />
+                </Box>
+              ) : (
+                <Box>
+                  <CategoryForm
+                    handleSubmit={handleFormSubmit}
+                    handleClose={handleFormClose}
+                  />
+                </Box>
+              )}
+            </Box>
+          )}
+        </Paper>
       </Container>
 
       <Dialog
@@ -220,7 +290,12 @@ export default function Categories() {
           <Button onClick={handleCancelDelete} color="primary" size="large">
             Cancel
           </Button>
-          <Button onClick={handleConfirmDelete} color="primary" size="large" autoFocus>
+          <Button
+            onClick={handleConfirmDelete}
+            color="primary"
+            size="large"
+            autoFocus
+          >
             Confirm
           </Button>
         </DialogActions>

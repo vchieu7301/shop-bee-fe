@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import AddIcon from "@mui/icons-material/Add";
+import {
+  Add as AddIcon,
+  Edit as EditIcon,
+  DeleteOutline as DeleteOutlineIcon,
+  FilterList as FilterListIcon,
+} from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Layout from "../../layouts/Layout";
@@ -15,9 +18,19 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Divider,
+  Grid,
   IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  Typography,
 } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
 import Loader from "../../Components/Loader";
 
 export default function Users() {
@@ -29,6 +42,8 @@ export default function Users() {
   const [isFormVisible, setIsFormVisible] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,46 +74,18 @@ export default function Users() {
     fetchData();
   }, [navigate, apiUrl]);
 
-  const columns = [
-    { field: "index", headerName: "#", flex: 0.5 },
-    { field: "name", headerName: "Name", flex: 1.5 },
-    { field: "email", headerName: "Email", flex: 1.5 },
-    { field: "role", headerName: "Role", flex: 1 },
-    {
-      field: "actions",
-      headerName: "Actions",
-      flex: 1,
-      headerAlign: "center",
-      align: "center",
-      renderHeader: () => (
-        <IconButton
-          aria-label="add"
-          color="primary"
-          onClick={() => handleAdd()}
-        >
-          <AddIcon />
-        </IconButton>
-      ),
-      renderCell: (params) => (
-        <Box display="flex" justifyContent="space-between">
-          <IconButton
-            aria-label="edit"
-            color="primary"
-            onClick={() => handleEdit(params.row.id)}
-          >
-            <EditIcon />
-          </IconButton>
-          <IconButton
-            aria-label="delete"
-            color="secondary"
-            onClick={() => handleDelete(params.row.id)}
-          >
-            <DeleteOutlineIcon />
-          </IconButton>
-        </Box>
-      ),
-    },
-  ];
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleFilter = () => {
+    
+  };
 
   const handleAdd = () => {
     setIsFormVisible(true);
@@ -171,41 +158,123 @@ export default function Users() {
   return (
     <Layout>
       <Container sx={{ mt: 10 }}>
-        <Box sx={{ height: 400, width: "100%" }}>
-          {loading && !isFormVisible ? (
-            <Loader />
-          ) : (
-            <DataGrid
-              rows={listData}
-              columns={columns}
-              pageSize={10}
-              rowsPerPageOptions={[10]}
-              disableColumnMenu
-              rowHeight={70}
-              columnHeaderHeight={80}
-            />
-          )}
-        </Box>
-        {isFormVisible && (
-          <Box>
-            {editingUser ? (
-              <Box>
-                <UserForm
-                  initialUser={editingUser}
-                  handleSubmit={handleFormSubmit}
-                  handleClose={handleFormClose}
-                />
-              </Box>
+        <Paper elevation={2} sx={{ padding: 5 }}>
+        <Grid container justifyContent="space-between" alignItems="center">
+            <Grid item>
+              <Typography variant="h3">Users</Typography>
+            </Grid>
+            <Grid item>
+              <Button
+                size="medium"
+                variant="contained"
+                color="primary"
+                onClick={handleAdd}
+                startIcon={<AddIcon />}
+              >
+                New User
+              </Button>
+            </Grid>
+          </Grid>
+          <Divider sx={{ my: 2 }} />
+          <Grid
+            container
+            spacing={2}
+            justifyContent="space-between"
+            alignItems="center"
+          >
+          <Grid item></Grid>
+            <Grid item>
+              <IconButton
+                onClick={handleFilter}
+                color="inherit"
+                aria-label="Filter list"
+              >
+                <FilterListIcon />
+              </IconButton>
+            </Grid>
+          </Grid>
+          <Box sx={{ height: 600, width: "100%" }}>
+            {loading && !isFormVisible ? (
+              <Loader />
             ) : (
-              <Box>
-                <UserForm
-                  handleSubmit={handleFormSubmit}
-                  handleClose={handleFormClose}
-                />
+              <Box sx={{ maxHeight: 600, overflowY: "auto" }}>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>User ID</TableCell>
+                      <TableCell>Name</TableCell>
+                      <TableCell>Email</TableCell>
+                      <TableCell>Role</TableCell>
+                      <TableCell>Actions</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {listData
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
+                      )
+                      .map((user) => (
+                        <TableRow key={user.id}>
+                          <TableCell>#{user.id}</TableCell>
+                          <TableCell>{user.name}</TableCell>
+                          <TableCell>{user.email}</TableCell>
+                          <TableCell>{user.role}</TableCell>
+                          <TableCell>
+                            <IconButton
+                              aria-label="edit"
+                              color="primary"
+                              onClick={() => handleEdit(user.id)}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton
+                              aria-label="delete"
+                              color="secondary"
+                              onClick={() => handleDelete(user.id)}
+                            >
+                              <DeleteOutlineIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
               </Box>
             )}
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 50, 100]}
+              component="div"
+              count={listData.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
           </Box>
-        )}
+          {isFormVisible && (
+            <Box>
+              {editingUser ? (
+                <Box>
+                  <UserForm
+                    initialUser={editingUser}
+                    handleSubmit={handleFormSubmit}
+                    handleClose={handleFormClose}
+                  />
+                </Box>
+              ) : (
+                <Box>
+                  <UserForm
+                    handleSubmit={handleFormSubmit}
+                    handleClose={handleFormClose}
+                  />
+                </Box>
+              )}
+            </Box>
+          )}
+        </Paper>
       </Container>
       <Dialog
         open={confirmDialogOpen}
