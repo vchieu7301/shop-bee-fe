@@ -88,7 +88,7 @@ const ProductForm = ({ initialProduct, handleSubmit, handleClose, handleAddCateg
     e.preventDefault();
     const productData = {
       product_name: product.product_name,
-      description: product.description,
+      product_description: product.product_description,
       price: product.price,
       quantity: product.quantity,
       category_id: product.category_id,
@@ -138,8 +138,8 @@ const ProductForm = ({ initialProduct, handleSubmit, handleClose, handleAddCateg
               <TextField
                 fullWidth
                 label="Description"
-                name="description"
-                value={product.description || ""}
+                name="product_description"
+                value={product.product_description || ""}
                 onChange={handleChange}
               />
             </Grid>

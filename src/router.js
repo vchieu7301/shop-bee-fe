@@ -6,10 +6,13 @@ import Users from "./pages/user/Users";
 import Products from "./pages/product/Products"
 import Categories from "./pages/category/Categories";
 import ChangePassword from "./pages/user/ChangePassword";
+import Login from "./users/pages/auth/Auth";
+import SignUp from "./users/pages/auth/SignUp";
+import { Home } from "@mui/icons-material";
 const AdminRoutes = () => {
   return (
     <Routes>
-      <Route path="dashboard" element={<Dashboard />} />
+      <Route path="/" element={<Dashboard />} />
       <Route path="change-password" element={<ChangePassword />} />
       <Route path="login" element={<Auth />} />
       <Route path="orders" element={<Orders />} />
@@ -25,7 +28,9 @@ const AppRouter = () => {
     <Router>
     {/* <LayoutProvider> */}
       <Routes>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/sign-in" element={<Login />} />
+        <Route path="/sign-up" element={<SignUp />} />
         <Route path="admin/*" element={<AdminRoutes />} />
       </Routes>
       {/* </LayoutProvider> */}

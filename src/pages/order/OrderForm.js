@@ -92,7 +92,7 @@ const OrderForm = ({ initialOrder, handleSubmit, handleClose }) => {
                 label="Order Date"
                 type="date"
                 name="order_date"
-                value={formatDateForTextField(order.order_date) || ""}
+                value={formatDateForTextField(order.order_date) || ''}
                 onChange={handleChange}
                 InputLabelProps={{
                   shrink: true,
@@ -117,18 +117,20 @@ const OrderForm = ({ initialOrder, handleSubmit, handleClose }) => {
                 <Select
                   id="payment-method"
                   name="payment_method"
-                  value={order.payment_method || ""}
+                  value={order.payment_method || "0"}
                   label="Payment Method"
                   labelId="payment-method-select-label"
                   onChange={handleChange}
                 >
-                  <MenuItem value="None">
+                  <MenuItem value="0">
                     <em>-None-</em>
                   </MenuItem>
-                  <MenuItem value="Payment using cash">
-                    Payment using cash
+                  <MenuItem value="Cash">
+                    Cash
                   </MenuItem>
-                  <MenuItem value="Bank transfer">Bank transfer</MenuItem>
+                  <MenuItem value="Visa">Visa</MenuItem>
+                  <MenuItem value="Paypal">Paypal</MenuItem>
+                  <MenuItem value="Mastercard">Mastercard</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -140,7 +142,7 @@ const OrderForm = ({ initialOrder, handleSubmit, handleClose }) => {
                 <Select
                   id="product-select"
                   name="product_id"
-                  value={order.product_id || ""}
+                  value={order.product_id || "0"}
                   label="Select a Product"
                   labelId="product-select-label"
                   onChange={handleChange}
@@ -162,16 +164,17 @@ const OrderForm = ({ initialOrder, handleSubmit, handleClose }) => {
                 <Select
                   id="status"
                   name="status"
-                  value={order.status || ""}
+                  value={order.status || "0"}
                   label="Status"
                   labelId="status-select-label"
                   onChange={handleChange}
                 >
-                  <MenuItem value="">
+                  <MenuItem value="0">
                     <em>-None-</em>
                   </MenuItem>
-                  <MenuItem value="1">Waiting</MenuItem>
-                  <MenuItem value="2">Complete</MenuItem>
+                  <MenuItem value="Processing">Processing</MenuItem>
+                  <MenuItem value="Shipped">Shipped</MenuItem>
+                  <MenuItem value="Cancelled">Cancelled</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
