@@ -1,19 +1,30 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import AccountCircle from "@mui/icons-material/AccountCircle";
-import { Menu, MenuItem, Typography } from "@mui/material";
+import React, { useState, useContext } from "react";
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  IconButton,
+  Menu,
+  MenuItem,
+  Typography,
+  ListItemIcon,
+} from "@mui/material";
+import {
+  AccountCircle as AccountCircleIcon,
+  Logout as LogoutIcon,
+  ManageAccounts as ManageAccountsIcon,
+} from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import LayoutContext from "../context/LayoutContext";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 export default function Header() {
   const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
-  const [anchorEl, setAnchorEl] = React.useState(null);
-  const { selectedListItem } = React.useContext(LayoutContext);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const { selectedListItem } = useContext(LayoutContext);
+
 
   const handleMenu = (event) => {
     setAnchorEl(event.currentTarget);
@@ -30,7 +41,8 @@ export default function Header() {
       handleClose();
       return;
     }
-    axios.post(`${apiUrl}/admin/sign-out`, null, {
+    axios
+      .post(`${apiUrl}/admin/sign-out`, null, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -49,15 +61,25 @@ export default function Header() {
       });
   };
 
+  const menuItems = [
+    {
+      text: "Change Password",
+      icon: <ManageAccountsIcon />,
+      path: "/admin/change-password",
+    },
+    { text: "Logout", icon: <LogoutIcon />, onClick: handleLogout },
+  ];
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-        <Box>
-        <Typography variant="h6">{selectedListItem}</Typography>
+          <Box>
+            <Typography variant="h6">{selectedListItem}</Typography>
           </Box>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
+            <ThemeSwitcher />
             <IconButton
               size="large"
               edge="end"
@@ -66,7 +88,7 @@ export default function Header() {
               onClick={handleMenu}
               color="inherit"
             >
-              <AccountCircle />
+              <AccountCircleIcon />
             </IconButton>
             <Menu
               anchorEl={anchorEl}
@@ -83,7 +105,17 @@ export default function Header() {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleLogout}>Logout</MenuItem>
+              {menuItems.map((item, index) => (
+                <MenuItem
+                  key={index}
+                  onClick={
+                    item.onClick ? item.onClick : () => navigate(item.path)
+                  }
+                >
+                  <ListItemIcon>{item.icon}</ListItemIcon>
+                  {item.text}
+                </MenuItem>
+              ))}
             </Menu>
           </Box>
         </Toolbar>

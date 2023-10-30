@@ -15,19 +15,20 @@ import {
   ChevronLeft as ChevronLeftIcon,
   SignalCellularAlt as SignalCellularAltIcon,
   AttachMoney as AttachMoneyIcon,
-  AccountBox as AccountBoxIcon,
   Group as GroupIcon,
   AddShoppingCart as AddShoppingCartIcon,
   Bookmark as BookmarkIcon,
   EmojiNature as EmojiNatureIcon,
 } from "@mui/icons-material";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
+import { 
+  ListItemButton,
+   ListItemIcon,
+    ListItemText 
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import LayoutContext from "../context/LayoutContext";
 
-const drawerWidth = 200;
+const drawerWidth = 220;
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -89,21 +90,17 @@ const Sidebar = () => {
   
 
   const menuItems = [
-    { text: "Dashboard", icon: <SignalCellularAltIcon />, path: "/" },
+    { text: "Dashboard", icon: <SignalCellularAltIcon />, path: "/admin/" },
     { text: "Orders", icon: <AttachMoneyIcon />, path: "/admin/orders" },
     { text: "Users", icon: <GroupIcon />, path: "/admin/users" },
     { text: "Products", icon: <AddShoppingCartIcon />, path: "/admin/products" },
     { text: "Categories", icon: <BookmarkIcon />, path: "/admin/categories" },
   ];
 
-  const userMenuItems = [
-    { text: "Change Password", icon: <AccountBoxIcon  />, path: "/admin/change-password" },
-  ];
-
   return (
     <Drawer variant="permanent" open={open}>
       <DrawerHeader>
-      <Box sx={{ display: "flex", alignItems: "center", opacity: open ? 1 : 0  }}>
+      <Box sx={{ display: "flex", alignItems: "center", opacity: open ? 1 : 0 }}>
           <EmojiNatureIcon fontSize="large" /> 
           <Typography variant="h5" sx={{ ml: 1 }}>
             Shop-bee
@@ -113,7 +110,7 @@ const Sidebar = () => {
       </DrawerHeader>
       <Divider />
       <List>
-        <ListSubheader>System Setting</ListSubheader>
+        <ListSubheader sx={{ opacity: open ? 1 : 0 }}>System Setting</ListSubheader>
         {menuItems.map((item, index) => (
           <ListItem
             disablePadding
@@ -133,29 +130,6 @@ const Sidebar = () => {
           </ListItem>
         ))}
       </List>
-      <Divider />
-      <List>
-        <ListSubheader>User</ListSubheader>
-        {userMenuItems.map((item, index) => (
-          <ListItem
-            disablePadding
-            sx={{ display: "block" }}
-            key={index}
-            onClick={() => {
-              handleListItemClick(item.text);
-              navigate(item.path);
-            }}
-          >
-            <ListItemButton sx={{ minHeight: 48, justifyContent: open ? "initial" : "center", px: 2.5 }}>
-              <ListItemIcon sx={{ minWidth: 0, mr: open ? 2 : "auto", justifyContent: "center" }}>
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
     </Drawer>
   );
 };
