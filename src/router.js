@@ -8,7 +8,10 @@ import Categories from "./pages/category/Categories";
 import ChangePassword from "./pages/user/ChangePassword";
 import Login from "./users/pages/auth/Auth";
 import SignUp from "./users/pages/auth/SignUp";
-import { Home } from "@mui/icons-material";
+import Home from "./users/pages/home/Home";
+import Cart from "./users/pages/cart/Cart";
+import Product from "./users/pages/product/Product";
+import Checkout from "./users/pages/checkout/Checkout";
 const AdminRoutes = () => {
   return (
     <Routes>
@@ -28,6 +31,9 @@ const AppRouter = () => {
     <Router>
     {/* <LayoutProvider> */}
       <Routes>
+        <Route path="/cart" element={<Cart />} />
+        <Route path="/checkouts" element={<Checkout />} />
+        <Route path="/product/:id" element={<Product />} />
         <Route path="/" element={<Home />} />
         <Route path="/sign-in" element={<Login />} />
         <Route path="/sign-up" element={<SignUp />} />
