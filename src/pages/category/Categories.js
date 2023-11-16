@@ -49,7 +49,7 @@ export default function Categories() {
       try {
         const response = await axios.get(`${apiUrl}/admin/categories`, {
           headers: {
-            Authorization: "Bearer " + localStorage.getItem("Token"),
+            Authorization: "Bearer " + localStorage.getItem("token"),
           },
         });
         if (response.data && response.data.result) {
@@ -80,9 +80,7 @@ export default function Categories() {
     setPage(0);
   };
 
-  const handleFilter = () => {
-    
-  };
+  const handleFilter = () => {};
 
   const handleAdd = () => {
     setIsFormVisible(true);
@@ -140,7 +138,7 @@ export default function Categories() {
         `${apiUrl}/admin/categories/${deleteCategoryId}`,
         {
           headers: {
-            Authorization: "Bearer " + localStorage.getItem("Token"),
+            Authorization: "Bearer " + localStorage.getItem("token"),
           },
         }
       );
@@ -156,11 +154,18 @@ export default function Categories() {
     setConfirmDialogOpen(false);
   };
 
+  const tableHeadData = [
+    "Category ID",
+    "Category Name",
+    "Description",
+    "Actions",
+  ];
+
   return (
     <Layout>
       <Container sx={{ mt: 10 }}>
         <Paper elevation={2} sx={{ padding: 5 }}>
-        <Grid container justifyContent="space-between" alignItems="center">
+          <Grid container justifyContent="space-between" alignItems="center">
             <Grid item>
               <Typography variant="h3">Categories</Typography>
             </Grid>
@@ -183,7 +188,7 @@ export default function Categories() {
             justifyContent="space-between"
             alignItems="center"
           >
-          <Grid item></Grid>
+            <Grid item></Grid>
             <Grid item>
               <IconButton
                 onClick={handleFilter}
@@ -202,10 +207,9 @@ export default function Categories() {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>Category ID</TableCell>
-                      <TableCell>Category Name</TableCell>
-                      <TableCell>Description</TableCell>
-                      <TableCell>Actions</TableCell>
+                      {tableHeadData.map((header, index) => (
+                        <TableCell key={index}>{header}</TableCell>
+                      ))}
                     </TableRow>
                   </TableHead>
                   <TableBody>

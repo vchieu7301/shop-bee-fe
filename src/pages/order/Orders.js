@@ -49,31 +49,32 @@ export default function Orders() {
       try {
         const response = await axios.get(`${apiUrl}/admin/orders`, {
           headers: {
-            Authorization: "Bearer " + localStorage.getItem("Token"),
+            Authorization: "Bearer " + localStorage.getItem("token"),
           },
         });
         if (response.data && response.data.result) {
           setListData(
-            response.data.result.map((row, index) => ({
-              id: row.order.id,
-              index: index + 1,
-              order_date: row.order.order_date,
-              user: row.user,
-              shipping_address: row.order.shipping_address,
-              coupon_code: row.order.coupon_code,
-              shipping_fee: row.order.shipping_fee,
-              status: row.order.status,
-              payment_method: row.order.payment_method,
-              product_id: row.details[0].product_id,
-              product_name: row.details[0].product_name.product_name,
-              quantity: row.details[0].quantity,
-              subtotal: row.details.reduce(
-                (sum, detail) => sum + detail.subtotal,
-                0
-              ),
-            }))
+            response.data.result.map((row, index) => {
+              const productDetails = row.details && row.details.length > 0 ? row.details[0] : null;
+              return {
+                id: row.order.id,
+                index: index + 1,
+                order_date: row.order.order_date,
+                user: row.user,
+                shipping_address: row.order.shipping_address,
+                coupon_code: row.order.coupon_code,
+                shipping_fee: row.order.shipping_fee,
+                status: row.order.status,
+                payment_method: row.order.payment_method,
+                product_id: productDetails ? productDetails.product_id : null,
+                product_name: productDetails ? (productDetails.product_name ? productDetails.product_name.product_name : null) : null,
+                quantity: productDetails ? productDetails.quantity : null,
+                subtotal: row.details ? row.details.reduce((sum, detail) => sum + (detail.subtotal || 0), 0) : 0,
+              };
+            })
           );
         }
+        console.log(listData)
       } catch (error) {
         console.error(error);
       } finally {
@@ -92,9 +93,7 @@ export default function Orders() {
     setPage(0);
   };
 
-  const handleFilter = () => {
-    
-  };
+  const handleFilter = () => {};
 
   const handleAdd = () => {
     setIsFormVisible(true);
@@ -116,7 +115,7 @@ export default function Orders() {
 
   const handleFormSubmit = async (formData) => {
     const headers = {
-      Authorization: `Bearer ${localStorage.getItem("Token")}`,
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
       "Content-Type": "application/json",
     };
 
@@ -148,7 +147,7 @@ export default function Orders() {
         `${apiUrl}/admin/orders/${deleteOrderId}`,
         {
           headers: {
-            Authorization: "Bearer " + localStorage.getItem("Token"),
+            Authorization: "Bearer " + localStorage.getItem("token"),
           },
         }
       );
@@ -164,6 +163,14 @@ export default function Orders() {
     setConfirmDialogOpen(false);
   };
 
+  const tableHeadData = [
+    "Order ID",
+    "Product Name",
+    "Status",
+    "Payment Method",
+    "Sale Amount",
+    "Actions",
+  ];
   return (
     <Layout>
       <Container sx={{ mt: 10 }}>
@@ -191,7 +198,7 @@ export default function Orders() {
             justifyContent="space-between"
             alignItems="center"
           >
-          <Grid item></Grid>
+            <Grid item></Grid>
             <Grid item>
               <IconButton
                 onClick={handleFilter}
@@ -210,12 +217,9 @@ export default function Orders() {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>Order ID</TableCell>
-                      <TableCell>Product Name</TableCell>
-                      <TableCell>Status</TableCell>
-                      <TableCell>Payment Method</TableCell>
-                      <TableCell>Sale Amount</TableCell>
-                      <TableCell>Actions</TableCell>
+                      {tableHeadData.map((header, index) => (
+                        <TableCell key={index}>{header}</TableCell>
+                      ))}
                     </TableRow>
                   </TableHead>
                   <TableBody>

@@ -24,7 +24,7 @@ const OrderForm = ({ initialOrder, handleSubmit, handleClose }) => {
       try {
         const response = await axios.get(`${apiUrl}/admin/products`, {
           headers: {
-            Authorization: "Bearer " + localStorage.getItem("Token"),
+            Authorization: "Bearer " + localStorage.getItem("token"),
           },
         });
         if (response.data && response.data.result) {

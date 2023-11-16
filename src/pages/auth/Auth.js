@@ -39,9 +39,9 @@ function Auth() {
       });
       navigate("/admin/");
       JSON.stringify(
-        localStorage.setItem("Token", response.data.token),
-        localStorage.setItem("UserId", response.data.user.id),
-        localStorage.setItem("UserName", response.data.user.name)
+        localStorage.setItem("token", response.data.token),
+        localStorage.setItem("userID", response.data.user.id),
+        localStorage.setItem("userName", response.data.user.name)
       );
     } catch (error) {
       console.error(error);

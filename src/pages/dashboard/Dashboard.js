@@ -76,7 +76,7 @@ function Dashboard() {
       try {
         const response = await axios.get(`${apiUrl}/admin/orders`, {
           headers: {
-            Authorization: "Bearer " + localStorage.getItem("Token"),
+            Authorization: "Bearer " + localStorage.getItem("token"),
           },
         });
         if (response.data && response.data.result) {
@@ -104,7 +104,7 @@ function Dashboard() {
         }
         const usersResponse = await axios.get(`${apiUrl}/admin/users`, {
           headers: {
-            Authorization: "Bearer " + localStorage.getItem("Token"),
+            Authorization: "Bearer " + localStorage.getItem("token"),
           },
         });
         if (usersResponse.data && usersResponse.data.result) {

@@ -52,7 +52,7 @@ export default function Products() {
       try {
         const response = await axios.get(`${apiUrl}/admin/products`, {
           headers: {
-            Authorization: "Bearer " + localStorage.getItem("Token"),
+            Authorization: "Bearer " + localStorage.getItem("token"),
           },
         });
         if (response.data && response.data.result) {
@@ -62,7 +62,8 @@ export default function Products() {
               index: index + 1,
               name: row.product_name,
               quantity: row.quantity,
-              category: row.category_name,
+              category_id: row.category_id,
+              category_name: row.category_name,
               description: row.product_description,
               price: row.price,
               image: row.images,
@@ -145,7 +146,7 @@ export default function Products() {
         `${apiUrl}/admin/products/${deleteProductId}`,
         {
           headers: {
-            Authorization: "Bearer " + localStorage.getItem("Token"),
+            Authorization: "Bearer " + localStorage.getItem("token"),
           },
         }
       );
@@ -178,6 +179,17 @@ export default function Products() {
       console.error("Error adding category:", error);
     }
   };
+
+  const tableHeadData = [
+    "Product ID",
+    "Product Name",
+    "Price",
+    "Quantity",
+    "Description",
+    "Category",
+    "Image",
+    "Actions",
+  ];
 
   return (
     <Layout>
@@ -225,14 +237,9 @@ export default function Products() {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>Product ID</TableCell>
-                      <TableCell>Product Name</TableCell>
-                      <TableCell>Price</TableCell>
-                      <TableCell>Quantity</TableCell>
-                      <TableCell>Description</TableCell>
-                      <TableCell>Category</TableCell>
-                      <TableCell>Image</TableCell>
-                      <TableCell>Actions</TableCell>
+                      {tableHeadData.map((header, index) => (
+                        <TableCell key={index}>{header}</TableCell>
+                      ))}
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -245,11 +252,13 @@ export default function Products() {
                         <TableRow key={product.id}>
                           <TableCell>#{product.id}</TableCell>
                           <TableCell>{product.name}</TableCell>
-                          <TableCell>{product.price}</TableCell>
+                          <TableCell>{product.price}$</TableCell>
                           <TableCell>{product.quantity}</TableCell>
                           <TableCell>{product.description}</TableCell>
-                          <TableCell>{product.category}</TableCell>
-                          <TableCell><ImageRenderer value={product.image} /></TableCell>
+                          <TableCell>{product.category_name}</TableCell>
+                          <TableCell sx={{ maxWidth: "100px", maxHeight: "100px" }}>
+                            <ImageRenderer value={product.image} />
+                          </TableCell>
                           <TableCell>
                             <IconButton
                               aria-label="edit"
