@@ -48,9 +48,9 @@ export default function Header() {
         },
       })
       .then(() => {
-        localStorage.removeItem("Token");
-        localStorage.removeItem("UserName");
-        localStorage.removeItem("UserId");
+        localStorage.removeItem("token");
+        localStorage.removeItem("userName");
+        localStorage.removeItem("userID");
         console.log("Logout successful");
         navigate("/admin/login");
         handleClose();
@@ -73,7 +73,7 @@ export default function Header() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar sx={{ bgcolor:'#fff', color: 'black' }}>
           <Box>
             <Typography variant="h6">{selectedListItem}</Typography>
           </Box>
