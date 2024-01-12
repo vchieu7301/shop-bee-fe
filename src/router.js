@@ -15,7 +15,7 @@ import Checkout from "./users/pages/checkout/Checkout";
 const AdminRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<Dashboard />} />
+      <Route path="/dashboard" element={<Dashboard />} />
       <Route path="change-password" element={<ChangePassword />} />
       <Route path="login" element={<Auth />} />
       <Route path="orders" element={<Orders />} />
