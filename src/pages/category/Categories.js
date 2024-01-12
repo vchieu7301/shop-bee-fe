@@ -30,7 +30,7 @@ import {
 import Loader from "../../Components/Loader";
 import CategoryForm from "./CategoryForm";
 import Layout from "../../layouts/Layout";
-import axios from "axios";
+import apiService from '../../services/apiService';
 
 export default function Categories() {
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -47,14 +47,10 @@ export default function Categories() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${apiUrl}/admin/categories`, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        });
-        if (response.data && response.data.result) {
+        const response = await apiService.getCategories();
+        if (response && response.result) {
           setCategories(
-            response.data.result.map((category, index) => ({
+            response.result.map((category, index) => ({
               id: category.id,
               index: index + 1,
               category_name: category.category_name,
@@ -71,12 +67,12 @@ export default function Categories() {
     fetchData();
   }, [apiUrl]);
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (e, newPage) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+  const handleChangeRowsPerPage = (e) => {
+    setRowsPerPage(parseInt(e.target.value, 10));
     setPage(0);
   };
 
@@ -101,26 +97,13 @@ export default function Categories() {
   };
 
   const handleFormSubmit = async (formData) => {
-    const headers = {
-      Authorization: `Bearer ${localStorage.getItem("Token")}`,
-      "Content-Type": "application/json",
-    };
-
     try {
       if (editingCategory) {
         console.log("Editing category:", formData);
-        await axios.put(
-          `${apiUrl}/admin/categories/${editingCategory.id}`,
-          formData,
-          {
-            headers,
-          }
-        );
+        await apiService.editCategory(editingCategory.id, formData);
       } else {
         console.log("Adding category:", formData);
-        await axios.post(`${apiUrl}/admin/categories`, formData, {
-          headers,
-        });
+        await apiService.addCategory(formData);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -134,15 +117,8 @@ export default function Categories() {
 
   const handleConfirmDelete = async () => {
     try {
-      const response = await axios.delete(
-        `${apiUrl}/admin/categories/${deleteCategoryId}`,
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        }
-      );
-      console.log("Category deleted successfully:", response.data.message);
+      await apiService.deleteCategory(deleteCategoryId);
+      console.log("Category deleted successfully");
     } catch (error) {
       console.error("Error deleting category:", error);
     } finally {

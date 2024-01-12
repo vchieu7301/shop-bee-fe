@@ -33,6 +33,7 @@ import {
 } from "@mui/material";
 import Loader from "../../Components/Loader";
 import ImageRenderer from "./ImageRenderer";
+import apiService from '../../services/apiService';
 
 export default function Products() {
   const navigate = useNavigate();
@@ -50,14 +51,10 @@ export default function Products() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${apiUrl}/admin/products`, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        });
-        if (response.data && response.data.result) {
+        const response = await apiService.getProducts();
+        if (response && response.result) {
           setListData(
-            response.data.result.map((row, index) => ({
+            response.result.map((row, index) => ({
               id: row.id,
               index: index + 1,
               name: row.product_name,
@@ -109,26 +106,13 @@ export default function Products() {
   };
 
   const handleFormSubmit = async (formData) => {
-    const headers = {
-      Authorization: `Bearer ${localStorage.getItem("Token")}`,
-      "Content-Type": "application/json",
-    };
-
     try {
       if (editingProduct) {
         console.log("Editing product:", formData);
-        await axios.put(
-          `${apiUrl}/admin/products/${editingProduct.id}`,
-          formData,
-          {
-            headers,
-          }
-        );
+        await apiService.editProduct(editingProduct.id, formData);
       } else {
         console.log("Adding product:", formData);
-        await axios.post(`${apiUrl}/admin/products`, formData, {
-          headers,
-        });
+        await apiService.addProduct(formData);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -142,15 +126,8 @@ export default function Products() {
 
   const handleConfirmDelete = async () => {
     try {
-      const response = await axios.delete(
-        `${apiUrl}/admin/products/${deleteProductId}`,
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        }
-      );
-      console.log("Product deleted successfully:", response.data.message);
+      await apiService.deleteProduct(deleteProductId);
+      console.log("Product deleted successfully");
     } catch (error) {
       console.error("Error deleting product:", error);
     } finally {

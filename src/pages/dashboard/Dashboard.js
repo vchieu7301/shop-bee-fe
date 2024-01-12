@@ -25,11 +25,10 @@ import {
   LineChart,
   Line,
 } from "recharts";
-import axios from "axios";
 import Loader from "../../Components/Loader";
+import apiService from '../../services/apiService';
 
 function Dashboard() {
-  const apiUrl = process.env.REACT_APP_API_URL;
   const [listData, setListData] = useState([]);
   const [totalUsers, setTotalUsers] = useState(null);
   const [totalAmount, setTotalAmount] = useState(null);
@@ -74,11 +73,7 @@ function Dashboard() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${apiUrl}/admin/orders`, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        });
+        const response = await apiService.getOrders();
         if (response.data && response.data.result) {
           setListData(
             response.data.result.map((row, index) => ({
@@ -102,11 +97,7 @@ function Dashboard() {
           );
           setTotalAmount(response.data.total_amount);
         }
-        const usersResponse = await axios.get(`${apiUrl}/admin/users`, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        });
+        const usersResponse = await apiService.getUsers();
         if (usersResponse.data && usersResponse.data.result) {
           const index = usersResponse.data.result.length;
           setTotalUsers(index);
@@ -118,7 +109,7 @@ function Dashboard() {
       }
     };
     fetchData();
-  }, [apiUrl]);
+  },[]);
   return (
     <Layout>
       <Container sx={{ mt: 10 }}>

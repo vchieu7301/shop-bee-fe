@@ -30,10 +30,9 @@ import {
   Typography,
 } from "@mui/material";
 import Loader from "../../Components/Loader";
-import axios from "axios";
+import apiService from '../../services/apiService';
 
 export default function Orders() {
-  const apiUrl = process.env.REACT_APP_API_URL;
   const [listData, setListData] = useState([]);
   const [deleteOrderId, setDeleteOrderId] = useState(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
@@ -47,14 +46,10 @@ export default function Orders() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${apiUrl}/admin/orders`, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        });
-        if (response.data && response.data.result) {
+        const response = await apiService.getOrders();
+        if (response && response.result) {
           setListData(
-            response.data.result.map((row, index) => {
+            response.result.map((row, index) => {
               const productDetails = row.details && row.details.length > 0 ? row.details[0] : null;
               return {
                 id: row.order.id,
@@ -82,7 +77,7 @@ export default function Orders() {
       }
     };
     fetchData();
-  }, [apiUrl]);
+  },[]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -114,22 +109,13 @@ export default function Orders() {
   };
 
   const handleFormSubmit = async (formData) => {
-    const headers = {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-      "Content-Type": "application/json",
-    };
-
     try {
       if (editingOrder) {
         console.log("Editing order:", formData);
-        await axios.put(`${apiUrl}/admin/orders/${editingOrder.id}`, formData, {
-          headers,
-        });
+        await apiService.editOrder(editingOrder.id, formData);
       } else {
         console.log("Adding order:", formData);
-        await axios.post(`${apiUrl}/admin/orders`, formData, {
-          headers,
-        });
+        await apiService.addOrder(formData);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -143,15 +129,8 @@ export default function Orders() {
 
   const handleConfirmDelete = async () => {
     try {
-      const response = await axios.delete(
-        `${apiUrl}/admin/orders/${deleteOrderId}`,
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        }
-      );
-      console.log("Order deleted successfully:", response.data.message);
+      await apiService.deleteOrder(deleteOrderId);
+      console.log("Order deleted successfully");
     } catch (error) {
       console.error("Error deleting order:", error);
     } finally {

@@ -10,11 +10,10 @@ import {
   Grid,
 } from "@mui/material";
 import { Snackbar } from "@mui/material";
-import axios from "axios";
 import Layout from "../../layouts/Layout";
+import apiService from "../../services/apiService";
 
 const ChangePassword = () => {
-  const apiUrl = process.env.REACT_APP_API_URL;
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -41,20 +40,7 @@ const ChangePassword = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(
-        `${apiUrl}/admin/change-password`,
-        {
-          old_password: oldPassword,
-          new_password: newPassword,
-          confirm_password: confirmPassword,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("Token")}`,
-          },
-        }
-      );
-
+      const response = await apiService.changePassword(oldPassword, newPassword, confirmPassword);
       console.log("Password change successful:", response.data);
       if (response.data.error === true) {
         setAlertSeverity("error");

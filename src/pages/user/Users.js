@@ -6,7 +6,6 @@ import {
   FilterList as FilterListIcon,
 } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import Layout from "../../layouts/Layout";
 import UserForm from "./UserForm";
 import {
@@ -32,10 +31,10 @@ import {
   Typography,
 } from "@mui/material";
 import Loader from "../../Components/Loader";
+import apiService from "../../services/apiService";
 
 export default function Users() {
   const navigate = useNavigate();
-  const apiUrl = process.env.REACT_APP_API_URL;
   const [listData, setListData] = useState([]);
   const [deleteUserId, setDeleteUserId] = useState(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
@@ -49,14 +48,10 @@ export default function Users() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${apiUrl}/admin/users`, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        });
-        if (response.data && response.data.result) {
+        const response = await apiService.getUsers();
+        if (response && response.result) {
           setListData(
-            response.data.result.map((row, index) => ({
+            response.result.map((row, index) => ({
               id: row.id,
               index: index + 1,
               name: row.name,
@@ -72,7 +67,7 @@ export default function Users() {
       }
     };
     fetchData();
-  }, [navigate, apiUrl]);
+  }, [navigate]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -104,22 +99,13 @@ export default function Users() {
   };
 
   const handleFormSubmit = async (formData) => {
-    const headers = {
-      Authorization: `Bearer ${localStorage.getItem("Token")}`,
-      "Content-Type": "application/json",
-    };
-
     try {
       if (editingUser) {
         console.log("Editing user:", formData);
-        await axios.put(`${apiUrl}/admin/users/${editingUser.id}`, formData, {
-          headers,
-        });
+        await apiService.editUser(editingUser.id, formData);
       } else {
         console.log("Adding user:", formData);
-        await axios.post(`${apiUrl}/admin/users`, formData, {
-          headers,
-        });
+        await apiService.addUser(formData);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -133,15 +119,8 @@ export default function Users() {
 
   const handleConfirmDelete = async () => {
     try {
-      const response = await axios.delete(
-        `${apiUrl}/admin/users/${deleteUserId}`,
-        {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        }
-      );
-      console.log("User deleted successfully:", response.data.message);
+      await apiService.deleteUser(deleteUserId);
+      console.log("User deleted successfully:");
     } catch (error) {
       console.error("Error deleting user:", error);
     } finally {

@@ -1,8 +1,22 @@
-import React from "react";
-import { Avatar, Button, CssBaseline, TextField, FormControlLabel, Checkbox, Link, Grid, Box,Typography, Container, createTheme, ThemeProvider } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Avatar,
+  Button,
+  CssBaseline,
+  TextField,
+  FormControlLabel,
+  Checkbox,
+  Link,
+  Grid,
+  Box,
+  Typography,
+  Container,
+  createTheme,
+  ThemeProvider,
+} from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import apiService from "../../services/apiService";
 
 function Copyright(props) {
   return (
@@ -25,23 +39,30 @@ function Copyright(props) {
 const defaultTheme = createTheme();
 
 function Auth() {
-  const apiUrl = process.env.REACT_APP_API_URL;
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
   const navigate = useNavigate();
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const email = data.get("email");
-    const password = data.get("password");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevState => ({
+      ...prevState,
+      [name]: value
+    }));
+  };
+  
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { email, password } = formData;
     try {
-      const response = await axios.post(`${apiUrl}/admin/login`, {
-        email: email,
-        password: password,
-      });
-      navigate("/admin/");
+      const response = await apiService.login(email, password);
+      navigate("/admin/dashboard");
       JSON.stringify(
-        localStorage.setItem("token", response.data.token),
-        localStorage.setItem("userID", response.data.user.id),
-        localStorage.setItem("userName", response.data.user.name)
+        localStorage.setItem("token", response.token),
+        localStorage.setItem("userID", response.user.id),
+        localStorage.setItem("userName", response.user.name)
       );
     } catch (error) {
       console.error(error);
@@ -80,6 +101,7 @@ function Auth() {
               label="Email Address"
               name="email"
               autoComplete="email"
+              onChange={handleChange}
               autoFocus
             />
             <TextField
@@ -90,6 +112,7 @@ function Auth() {
               label="Password"
               type="password"
               id="password"
+              onChange={handleChange}
               autoComplete="current-password"
             />
             <FormControlLabel
