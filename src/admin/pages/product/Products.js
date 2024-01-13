@@ -5,6 +5,10 @@ import {
   DeleteOutline as DeleteOutlineIcon,
   FilterList as FilterListIcon,
 } from "@mui/icons-material";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import Layout from "../../layouts/Layout";
+import ProductForm from "./ProductForm"; // Assuming you have a ProductForm component
 import {
   Box,
   Button,
@@ -27,18 +31,18 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import Loader from "../../Components/Loader";
-import CategoryForm from "./CategoryForm";
-import Layout from "../../layouts/Layout";
+import Loader from "../../../components/Loader";
+import ImageRenderer from "./ImageRenderer";
 import apiService from '../../services/apiService';
 
-export default function Categories() {
+export default function Products() {
+  const navigate = useNavigate();
   const apiUrl = process.env.REACT_APP_API_URL;
-  const [categories, setCategories] = useState([]);
-  const [deleteCategoryId, setDeleteCategoryId] = useState(null);
+  const [listData, setListData] = useState([]);
+  const [deleteProductId, setDeleteProductId] = useState(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [editingCategory, setEditingCategory] = useState(null);
+  const [editingProduct, setEditingProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -47,32 +51,37 @@ export default function Categories() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await apiService.getCategories();
+        const response = await apiService.getProducts();
         if (response && response.result) {
-          setCategories(
-            response.result.map((category, index) => ({
-              id: category.id,
+          setListData(
+            response.result.map((row, index) => ({
+              id: row.id,
               index: index + 1,
-              category_name: category.category_name,
-              description: category.description,
+              name: row.product_name,
+              quantity: row.quantity,
+              category_id: row.category_id,
+              category_name: row.category_name,
+              description: row.product_description,
+              price: row.price,
+              image: row.images,
             }))
           );
         }
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching product data:", error);
       } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, [apiUrl]);
+  }, [navigate, apiUrl]);
 
-  const handleChangePage = (e, newPage) => {
+  const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (e) => {
-    setRowsPerPage(parseInt(e.target.value, 10));
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
 
@@ -80,30 +89,30 @@ export default function Categories() {
 
   const handleAdd = () => {
     setIsFormVisible(true);
-    setEditingCategory(null);
+    setEditingProduct(null);
   };
 
   const handleFormClose = () => {
     setIsFormVisible(false);
-    setEditingCategory(null);
+    setEditingProduct(null);
   };
 
   const handleEdit = (id) => {
-    const categoryToEdit = categories.find((category) => category.id === id);
-    if (categoryToEdit) {
+    const productToEdit = listData.find((product) => product.id === id);
+    if (productToEdit) {
       setIsFormVisible(true);
-      setEditingCategory(categoryToEdit);
+      setEditingProduct(productToEdit);
     }
   };
 
   const handleFormSubmit = async (formData) => {
     try {
-      if (editingCategory) {
-        console.log("Editing category:", formData);
-        await apiService.editCategory(editingCategory.id, formData);
+      if (editingProduct) {
+        console.log("Editing product:", formData);
+        await apiService.editProduct(editingProduct.id, formData);
       } else {
-        console.log("Adding category:", formData);
-        await apiService.addCategory(formData);
+        console.log("Adding product:", formData);
+        await apiService.addProduct(formData);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -111,16 +120,16 @@ export default function Categories() {
   };
 
   const handleDelete = (id) => {
-    setDeleteCategoryId(id);
+    setDeleteProductId(id);
     setConfirmDialogOpen(true);
   };
 
   const handleConfirmDelete = async () => {
     try {
-      await apiService.deleteCategory(deleteCategoryId);
-      console.log("Category deleted successfully");
+      await apiService.deleteProduct(deleteProductId);
+      console.log("Product deleted successfully");
     } catch (error) {
-      console.error("Error deleting category:", error);
+      console.error("Error deleting product:", error);
     } finally {
       setConfirmDialogOpen(false);
     }
@@ -130,10 +139,32 @@ export default function Categories() {
     setConfirmDialogOpen(false);
   };
 
+  const handleAddCategory = async (categoryData) => {
+    try {
+      const response = await axios.post(
+        `${apiUrl}/admin/categories`,
+        categoryData,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("Token")}`,
+          },
+        }
+      );
+      console.log("Category added successfully:", response.data);
+      setIsFormVisible(true);
+    } catch (error) {
+      console.error("Error adding category:", error);
+    }
+  };
+
   const tableHeadData = [
-    "Category ID",
-    "Category Name",
+    "Product ID",
+    "Product Name",
+    "Price",
+    "Quantity",
     "Description",
+    "Category",
+    "Image",
     "Actions",
   ];
 
@@ -143,7 +174,7 @@ export default function Categories() {
         <Paper elevation={2} sx={{ padding: 5 }}>
           <Grid container justifyContent="space-between" alignItems="center">
             <Grid item>
-              <Typography variant="h3">Categories</Typography>
+              <Typography variant="h3">Product</Typography>
             </Grid>
             <Grid item>
               <Button
@@ -153,7 +184,7 @@ export default function Categories() {
                 onClick={handleAdd}
                 startIcon={<AddIcon />}
               >
-                New Category
+                New Product
               </Button>
             </Grid>
           </Grid>
@@ -189,28 +220,34 @@ export default function Categories() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {categories
+                    {listData
                       .slice(
                         page * rowsPerPage,
                         page * rowsPerPage + rowsPerPage
                       )
-                      .map((category) => (
-                        <TableRow key={category.id}>
-                          <TableCell>#{category.id}</TableCell>
-                          <TableCell>{category.category_name}</TableCell>
-                          <TableCell>{category.description}</TableCell>
+                      .map((product) => (
+                        <TableRow key={product.id}>
+                          <TableCell>#{product.id}</TableCell>
+                          <TableCell>{product.name}</TableCell>
+                          <TableCell>{product.price}$</TableCell>
+                          <TableCell>{product.quantity}</TableCell>
+                          <TableCell>{product.description}</TableCell>
+                          <TableCell>{product.category_name}</TableCell>
+                          <TableCell sx={{ maxWidth: "100px", maxHeight: "100px" }}>
+                            <ImageRenderer value={product.image} />
+                          </TableCell>
                           <TableCell>
                             <IconButton
                               aria-label="edit"
                               color="primary"
-                              onClick={() => handleEdit(category.id)}
+                              onClick={() => handleEdit(product.id)}
                             >
                               <EditIcon />
                             </IconButton>
                             <IconButton
                               aria-label="delete"
                               color="secondary"
-                              onClick={() => handleDelete(category.id)}
+                              onClick={() => handleDelete(product.id)}
                             >
                               <DeleteOutlineIcon />
                             </IconButton>
@@ -224,7 +261,7 @@ export default function Categories() {
             <TablePagination
               rowsPerPageOptions={[10, 25, 50, 100]}
               component="div"
-              count={categories.length}
+              count={listData.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}
@@ -233,18 +270,20 @@ export default function Categories() {
           </Box>
           {isFormVisible && (
             <Box>
-              {editingCategory ? (
+              {editingProduct ? (
                 <Box>
-                  <CategoryForm
-                    initialCategory={editingCategory}
+                  <ProductForm
+                    initialProduct={editingProduct}
                     handleSubmit={handleFormSubmit}
+                    handleAddCategory={handleAddCategory}
                     handleClose={handleFormClose}
                   />
                 </Box>
               ) : (
                 <Box>
-                  <CategoryForm
+                  <ProductForm
                     handleSubmit={handleFormSubmit}
+                    handleAddCategory={handleAddCategory}
                     handleClose={handleFormClose}
                   />
                 </Box>
@@ -263,7 +302,7 @@ export default function Categories() {
         <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete this category?
+            Are you sure you want to delete this product?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

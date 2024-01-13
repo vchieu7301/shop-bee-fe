@@ -13,7 +13,7 @@ import {
   ShoppingCart as ShoppingCartIcon,
   Visibility as VisibilityIcon,
 } from "@mui/icons-material";
-import Loader from "../../../Components/Loader";
+import Loader from "../../../components/Loader";
 import Layout from "../../layouts/Layout";
 
 import Slider from "./Slider";

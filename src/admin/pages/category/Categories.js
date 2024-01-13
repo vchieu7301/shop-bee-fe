@@ -5,10 +5,6 @@ import {
   DeleteOutline as DeleteOutlineIcon,
   FilterList as FilterListIcon,
 } from "@mui/icons-material";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import Layout from "../../layouts/Layout";
-import ProductForm from "./ProductForm"; // Assuming you have a ProductForm component
 import {
   Box,
   Button,
@@ -31,18 +27,18 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import Loader from "../../Components/Loader";
-import ImageRenderer from "./ImageRenderer";
+import Loader from "../../../components/Loader";
+import CategoryForm from "./CategoryForm";
+import Layout from "../../layouts/Layout";
 import apiService from '../../services/apiService';
 
-export default function Products() {
-  const navigate = useNavigate();
+export default function Categories() {
   const apiUrl = process.env.REACT_APP_API_URL;
-  const [listData, setListData] = useState([]);
-  const [deleteProductId, setDeleteProductId] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [deleteCategoryId, setDeleteCategoryId] = useState(null);
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [isFormVisible, setIsFormVisible] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null);
+  const [editingCategory, setEditingCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -51,37 +47,32 @@ export default function Products() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await apiService.getProducts();
+        const response = await apiService.getCategories();
         if (response && response.result) {
-          setListData(
-            response.result.map((row, index) => ({
-              id: row.id,
+          setCategories(
+            response.result.map((category, index) => ({
+              id: category.id,
               index: index + 1,
-              name: row.product_name,
-              quantity: row.quantity,
-              category_id: row.category_id,
-              category_name: row.category_name,
-              description: row.product_description,
-              price: row.price,
-              image: row.images,
+              category_name: category.category_name,
+              description: category.description,
             }))
           );
         }
       } catch (error) {
-        console.error("Error fetching product data:", error);
+        console.error(error);
       } finally {
         setLoading(false);
       }
     };
     fetchData();
-  }, [navigate, apiUrl]);
+  }, [apiUrl]);
 
-  const handleChangePage = (event, newPage) => {
+  const handleChangePage = (e, newPage) => {
     setPage(newPage);
   };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
+  const handleChangeRowsPerPage = (e) => {
+    setRowsPerPage(parseInt(e.target.value, 10));
     setPage(0);
   };
 
@@ -89,30 +80,30 @@ export default function Products() {
 
   const handleAdd = () => {
     setIsFormVisible(true);
-    setEditingProduct(null);
+    setEditingCategory(null);
   };
 
   const handleFormClose = () => {
     setIsFormVisible(false);
-    setEditingProduct(null);
+    setEditingCategory(null);
   };
 
   const handleEdit = (id) => {
-    const productToEdit = listData.find((product) => product.id === id);
-    if (productToEdit) {
+    const categoryToEdit = categories.find((category) => category.id === id);
+    if (categoryToEdit) {
       setIsFormVisible(true);
-      setEditingProduct(productToEdit);
+      setEditingCategory(categoryToEdit);
     }
   };
 
   const handleFormSubmit = async (formData) => {
     try {
-      if (editingProduct) {
-        console.log("Editing product:", formData);
-        await apiService.editProduct(editingProduct.id, formData);
+      if (editingCategory) {
+        console.log("Editing category:", formData);
+        await apiService.editCategory(editingCategory.id, formData);
       } else {
-        console.log("Adding product:", formData);
-        await apiService.addProduct(formData);
+        console.log("Adding category:", formData);
+        await apiService.addCategory(formData);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -120,16 +111,16 @@ export default function Products() {
   };
 
   const handleDelete = (id) => {
-    setDeleteProductId(id);
+    setDeleteCategoryId(id);
     setConfirmDialogOpen(true);
   };
 
   const handleConfirmDelete = async () => {
     try {
-      await apiService.deleteProduct(deleteProductId);
-      console.log("Product deleted successfully");
+      await apiService.deleteCategory(deleteCategoryId);
+      console.log("Category deleted successfully");
     } catch (error) {
-      console.error("Error deleting product:", error);
+      console.error("Error deleting category:", error);
     } finally {
       setConfirmDialogOpen(false);
     }
@@ -139,32 +130,10 @@ export default function Products() {
     setConfirmDialogOpen(false);
   };
 
-  const handleAddCategory = async (categoryData) => {
-    try {
-      const response = await axios.post(
-        `${apiUrl}/admin/categories`,
-        categoryData,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("Token")}`,
-          },
-        }
-      );
-      console.log("Category added successfully:", response.data);
-      setIsFormVisible(true);
-    } catch (error) {
-      console.error("Error adding category:", error);
-    }
-  };
-
   const tableHeadData = [
-    "Product ID",
-    "Product Name",
-    "Price",
-    "Quantity",
+    "Category ID",
+    "Category Name",
     "Description",
-    "Category",
-    "Image",
     "Actions",
   ];
 
@@ -174,7 +143,7 @@ export default function Products() {
         <Paper elevation={2} sx={{ padding: 5 }}>
           <Grid container justifyContent="space-between" alignItems="center">
             <Grid item>
-              <Typography variant="h3">Product</Typography>
+              <Typography variant="h3">Categories</Typography>
             </Grid>
             <Grid item>
               <Button
@@ -184,7 +153,7 @@ export default function Products() {
                 onClick={handleAdd}
                 startIcon={<AddIcon />}
               >
-                New Product
+                New Category
               </Button>
             </Grid>
           </Grid>
@@ -220,34 +189,28 @@ export default function Products() {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    {listData
+                    {categories
                       .slice(
                         page * rowsPerPage,
                         page * rowsPerPage + rowsPerPage
                       )
-                      .map((product) => (
-                        <TableRow key={product.id}>
-                          <TableCell>#{product.id}</TableCell>
-                          <TableCell>{product.name}</TableCell>
-                          <TableCell>{product.price}$</TableCell>
-                          <TableCell>{product.quantity}</TableCell>
-                          <TableCell>{product.description}</TableCell>
-                          <TableCell>{product.category_name}</TableCell>
-                          <TableCell sx={{ maxWidth: "100px", maxHeight: "100px" }}>
-                            <ImageRenderer value={product.image} />
-                          </TableCell>
+                      .map((category) => (
+                        <TableRow key={category.id}>
+                          <TableCell>#{category.id}</TableCell>
+                          <TableCell>{category.category_name}</TableCell>
+                          <TableCell>{category.description}</TableCell>
                           <TableCell>
                             <IconButton
                               aria-label="edit"
                               color="primary"
-                              onClick={() => handleEdit(product.id)}
+                              onClick={() => handleEdit(category.id)}
                             >
                               <EditIcon />
                             </IconButton>
                             <IconButton
                               aria-label="delete"
                               color="secondary"
-                              onClick={() => handleDelete(product.id)}
+                              onClick={() => handleDelete(category.id)}
                             >
                               <DeleteOutlineIcon />
                             </IconButton>
@@ -261,7 +224,7 @@ export default function Products() {
             <TablePagination
               rowsPerPageOptions={[10, 25, 50, 100]}
               component="div"
-              count={listData.length}
+              count={categories.length}
               rowsPerPage={rowsPerPage}
               page={page}
               onPageChange={handleChangePage}
@@ -270,20 +233,18 @@ export default function Products() {
           </Box>
           {isFormVisible && (
             <Box>
-              {editingProduct ? (
+              {editingCategory ? (
                 <Box>
-                  <ProductForm
-                    initialProduct={editingProduct}
+                  <CategoryForm
+                    initialCategory={editingCategory}
                     handleSubmit={handleFormSubmit}
-                    handleAddCategory={handleAddCategory}
                     handleClose={handleFormClose}
                   />
                 </Box>
               ) : (
                 <Box>
-                  <ProductForm
+                  <CategoryForm
                     handleSubmit={handleFormSubmit}
-                    handleAddCategory={handleAddCategory}
                     handleClose={handleFormClose}
                   />
                 </Box>
@@ -302,7 +263,7 @@ export default function Products() {
         <DialogTitle id="alert-dialog-title">Confirm Deletion</DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Are you sure you want to delete this product?
+            Are you sure you want to delete this category?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

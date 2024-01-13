@@ -29,7 +29,7 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import Loader from "../../Components/Loader";
+import Loader from "../../../components/Loader";
 import apiService from '../../services/apiService';
 
 export default function Orders() {

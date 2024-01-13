@@ -3,8 +3,8 @@ import { createRoot } from "react-dom/client";
 import "./index.css";
 import reportWebVitals from "./reportWebVitals";
 import AppRouter from "./router";
-import { LayoutProvider } from "./context/LayoutContext";
-import { ThemeProvider } from "./context/ThemeContext";
+import { LayoutProvider } from "./admin/context/LayoutContext";
+import { ThemeProvider } from "./admin/context/ThemeContext";
 import { CssBaseline } from "@mui/material";
 import { CartProvider } from "./users/context/CartContext";
 

@@ -25,7 +25,7 @@ import {
   LineChart,
   Line,
 } from "recharts";
-import Loader from "../../Components/Loader";
+import Loader from "../../../components/Loader";
 import apiService from '../../services/apiService';
 
 function Dashboard() {

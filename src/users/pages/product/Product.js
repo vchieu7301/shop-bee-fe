@@ -19,7 +19,7 @@ import {
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import Loader from "../../../Components/Loader";
+import Loader from "../../../components/Loader";
 import { useCart } from "../../context/CartContext";
 
 export default function Product() {
