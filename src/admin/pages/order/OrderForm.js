@@ -12,7 +12,6 @@ import {
   DialogContent,
   DialogActions,
 } from "@mui/material";
-import axios from "axios";
 import apiService from '../../services/apiService';
 
 const OrderForm = ({ initialOrder, handleSubmit, handleClose }) => {
