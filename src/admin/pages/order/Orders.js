@@ -213,7 +213,7 @@ export default function Orders() {
                           <TableCell>{order.product_name}</TableCell>
                           <TableCell>{order.status}</TableCell>
                           <TableCell>{order.payment_method}</TableCell>
-                          <TableCell>{order.subtotal}</TableCell>
+                          <TableCell>{order.subtotal} $</TableCell>
                           <TableCell>
                             <IconButton
                               aria-label="edit"

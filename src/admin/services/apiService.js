@@ -2,16 +2,15 @@ import axios from "axios";
 
 const API_BASE_URL = process.env.REACT_APP_API_URL;
 
-const getToken = () => {
-  return localStorage.getItem("token");
+const getAccessToken = () => {
+  return localStorage.getItem("access_token");
 };
-
 const apiService = {
   //API Auth
   login: async (email, password) => {
     try {
       const response = await axios.post(`${API_BASE_URL}/admin/login`, {
-        email: email,
+        username: email,
         password: password,
       });
       return response.data;
@@ -19,11 +18,11 @@ const apiService = {
       throw error;
     }
   },
-
+  
   //API Users
   getUsers: async () => {
     try {
-      const token = getToken();
+      const token = getAccessToken();
       const response = await axios.get(`${API_BASE_URL}/admin/users`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -37,7 +36,7 @@ const apiService = {
 
   editUser: async (userId, userData) => {
     try {
-      const token = getToken();
+      const token = getAccessToken();
       const response = await axios.put(
         `${API_BASE_URL}/admin/users/${userId}`,
         userData,
@@ -56,7 +55,7 @@ const apiService = {
 
   addUser: async (userData) => {
     try {
-      const token = getToken();
+      const token = getAccessToken();
       const response = await axios.post(
         `${API_BASE_URL}/admin/users`,
         userData,
@@ -75,7 +74,7 @@ const apiService = {
 
   deleteUser: async (userId) => {
     try {
-      const token = getToken();
+      const token = getAccessToken();
       const response = await axios.delete(
         `${API_BASE_URL}/admin/users/${userId}`,
         {
@@ -92,7 +91,7 @@ const apiService = {
 
   changePassword: async (oldPassword, newPassword, confirmPassword) => {
     try {
-      const token = getToken();
+      const token = getAccessToken();
       const response = await axios.post(
         `${API_BASE_URL}/admin/change-password`,
         {
@@ -116,7 +115,7 @@ const apiService = {
   //API Orders
   getOrders: async () => {
     try {
-      const token = getToken();
+      const token = getAccessToken();
       const response = await axios.get(`${API_BASE_URL}/admin/orders`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -130,7 +129,7 @@ const apiService = {
 
   editOrder: async (orderId, orderData) => {
     try {
-      const token = getToken();
+      const token = getAccessToken();
       const response = await axios.put(
         `${API_BASE_URL}/admin/orders/${orderId}`,
         orderData,
@@ -149,7 +148,7 @@ const apiService = {
 
   addOrder: async (orderData) => {
     try {
-      const token = getToken();
+      const token = getAccessToken();
       const response = await axios.post(
         `${API_BASE_URL}/admin/orders`,
         orderData,
@@ -168,7 +167,7 @@ const apiService = {
 
   deleteOrder: async (orderId) => {
     try {
-      const token = getToken();
+      const token = getAccessToken();
       const response = await axios.delete(
         `${API_BASE_URL}/admin/orders/${orderId}`,
         {
@@ -187,7 +186,7 @@ const apiService = {
 
   getCategories: async () => {
     try {
-      const token = getToken();
+      const token = getAccessToken();
       const response = await axios.get(`${API_BASE_URL}/admin/categories`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -201,7 +200,7 @@ const apiService = {
 
   editCategory: async (categoryId, categoryData) => {
     try {
-      const token = getToken();
+      const token = getAccessToken();
       const response = await axios.put(
         `${API_BASE_URL}/admin/categories/${categoryId}`,
         categoryData,
@@ -220,7 +219,7 @@ const apiService = {
 
   addCategory: async (categoryData) => {
     try {
-      const token = getToken();
+      const token = getAccessToken();
       const response = await axios.post(
         `${API_BASE_URL}/admin/categories`,
         categoryData,
@@ -239,7 +238,7 @@ const apiService = {
 
   deleteCategory: async (categoryId) => {
     try {
-      const token = getToken();
+      const token = getAccessToken();
       const response = await axios.delete(
         `${API_BASE_URL}/admin/categories/${categoryId}`,
         {
@@ -258,7 +257,7 @@ const apiService = {
 
   getProducts: async () => {
     try {
-      const token = getToken();
+      const token = getAccessToken();
       const response = await axios.get(`${API_BASE_URL}/admin/products`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -272,7 +271,7 @@ const apiService = {
 
   editProduct: async (productId, productData) => {
     try {
-      const token = getToken();
+      const token = getAccessToken();
       const response = await axios.put(
         `${API_BASE_URL}/admin/products/${productId}`,
         productData,
@@ -291,7 +290,7 @@ const apiService = {
 
   addProduct: async (productData) => {
     try {
-      const token = getToken();
+      const token = getAccessToken();
       const response = await axios.post(
         `${API_BASE_URL}/admin/products`,
         productData,
@@ -310,7 +309,7 @@ const apiService = {
 
   deleteProduct: async (productId) => {
     try {
-      const token = getToken();
+      const token = getAccessToken();
       const response = await axios.delete(
         `${API_BASE_URL}/admin/products/${productId}`,
         {

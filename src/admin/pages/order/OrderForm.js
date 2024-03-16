@@ -13,6 +13,7 @@ import {
   DialogActions,
 } from "@mui/material";
 import axios from "axios";
+import apiService from '../../services/apiService';
 
 const OrderForm = ({ initialOrder, handleSubmit, handleClose }) => {
   const apiUrl = process.env.REACT_APP_API_URL;
@@ -22,13 +23,9 @@ const OrderForm = ({ initialOrder, handleSubmit, handleClose }) => {
   useEffect(() => {
     const fetchProductList = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/admin/products`, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        });
-        if (response.data && response.data.result) {
-          setProductList(response.data && response.data.result);
+        const response = await apiService.getProducts();
+        if (response && response.result) {
+          setProductList(response && response.result);
         }
       } catch (error) {
         console.error("Error fetching product list:", error);

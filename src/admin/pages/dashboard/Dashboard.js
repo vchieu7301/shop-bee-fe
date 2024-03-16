@@ -30,8 +30,8 @@ import apiService from '../../services/apiService';
 
 function Dashboard() {
   const [listData, setListData] = useState([]);
-  const [totalUsers, setTotalUsers] = useState(null);
-  const [totalAmount, setTotalAmount] = useState(null);
+  const [totalUsers, setTotalUsers] = useState("00");
+  const [totalAmount, setTotalAmount] = useState("00");
   const [loading, setLoading] = useState(true);
 
   const monthChartData = [
@@ -74,9 +74,9 @@ function Dashboard() {
       setLoading(true);
       try {
         const response = await apiService.getOrders();
-        if (response.data && response.data.result) {
+        if (response && response.result) {
           setListData(
-            response.data.result.map((row, index) => ({
+            response.result.map((row, index) => ({
               id: row.order.id,
               index: index + 1,
               order_date: row.order.order_date,
@@ -95,11 +95,11 @@ function Dashboard() {
               ),
             }))
           );
-          setTotalAmount(response.data.total_amount);
+          setTotalAmount(response.total_amount);
         }
         const usersResponse = await apiService.getUsers();
-        if (usersResponse.data && usersResponse.data.result) {
-          const index = usersResponse.data.result.length;
+        if (usersResponse && usersResponse.result) {
+          const index = usersResponse.result.length;
           setTotalUsers(index);
         }
       } catch (error) {
@@ -146,7 +146,7 @@ function Dashboard() {
                   <Typography variant="h6" gutterBottom>
                     Total Amount
                   </Typography>
-                  <Typography variant="h3">${totalAmount}</Typography>
+                  <Typography variant="h3">$ {totalAmount}</Typography>
                 </CardContent>
               </Card>
             </Grid>
@@ -158,7 +158,7 @@ function Dashboard() {
                       This Month Statistics
                     </Typography>
                     <Typography variant="h4" gutterBottom>
-                      ${monthSales}
+                      $ {monthSales}
                     </Typography>
                     <Box
                       sx={{
@@ -197,7 +197,7 @@ function Dashboard() {
                       This Week Statistics
                     </Typography>
                     <Typography variant="h4" gutterBottom>
-                      ${weekSales}
+                      $ {weekSales}
                     </Typography>
                     <Box
                       sx={{

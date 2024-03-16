@@ -60,9 +60,8 @@ function Auth() {
       const response = await apiService.login(email, password);
       navigate("/admin/dashboard");
       JSON.stringify(
-        localStorage.setItem("token", response.token),
-        localStorage.setItem("userID", response.user.id),
-        localStorage.setItem("userName", response.user.name)
+        localStorage.setItem("access_token", response.access_token),
+        localStorage.setItem("refresh_token", response.refresh_token)
       );
     } catch (error) {
       console.error(error);

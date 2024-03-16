@@ -35,7 +35,7 @@ export default function Header() {
   };
 
   const handleLogout = () => {
-    const token = localStorage.getItem("Token");
+    const token = localStorage.getItem("access_token");
     if (!token) {
       console.error("No token found");
       handleClose();
@@ -48,9 +48,8 @@ export default function Header() {
         },
       })
       .then(() => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userName");
-        localStorage.removeItem("userID");
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("refresh_token");
         console.log("Logout successful");
         navigate("/admin/login");
         handleClose();

@@ -16,7 +16,7 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import axios from "axios";
+import apiService from '../../services/apiService';
 
 const ProductForm = ({
   initialProduct,
@@ -37,16 +37,12 @@ const ProductForm = ({
   useEffect(() => {
     const fetchCategoryList = async () => {
       try {
-        const response = await axios.get(`${apiUrl}/admin/categories`, {
-          headers: {
-            Authorization: "Bearer " + localStorage.getItem("token"),
-          },
-        });
-        if (response.data && response.data.result) {
-          setCategoryList(response.data.result);
+        const response = await apiService.getCategories();
+        if (response && response.result) {
+          setCategoryList(response.result);
         }
       } catch (error) {
-        console.error("Error fetching product list:", error);
+        console.error("Error fetching categories list:", error);
       }
     };
     setProduct(initialProduct || {});

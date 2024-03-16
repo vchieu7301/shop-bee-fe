@@ -90,7 +90,7 @@ const Sidebar = () => {
   
 
   const menuItems = [
-    { text: "Dashboard", icon: <SignalCellularAltIcon />, path: "/admin/" },
+    { text: "Dashboard", icon: <SignalCellularAltIcon />, path: "/admin/dashboard" },
     { text: "Orders", icon: <AttachMoneyIcon />, path: "/admin/orders" },
     { text: "Users", icon: <GroupIcon />, path: "/admin/users" },
     { text: "Products", icon: <AddShoppingCartIcon />, path: "/admin/products" },
